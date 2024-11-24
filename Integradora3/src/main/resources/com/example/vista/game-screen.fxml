@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1002.0" prefWidth="1728.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.control.GameScreenController">
+   <VBox fx:id="vBox" alignment="TOP_CENTER" prefHeight="1002.0" prefWidth="498.0" styleClass="fourth-color" stylesheets="@../cssStyle/colorStyles.css">
+      <Label alignment="CENTER" styleClass="text-bold-first-color" stylesheets="@../cssStyle/colorStyles.css" text="Puntaje" textFill="#eeeeee">
+         <font>
+            <Font size="36.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+      </Label>
+      <Label fx:id="points" alignment="CENTER" styleClass="text-bold-first-color" text="0" textFill="#eeeeee">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+         <ImageView fx:id="axe" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../img/objects/tools/blackaxe.png" />
+         </ImageView>
+         <ImageView fx:id="hammer" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../img/objects/tools/blackhammer.png" />
+         </ImageView>
+         <ImageView fx:id="sword" fitHeight="60.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../img/objects/tools/blacksword.png" />
+         </ImageView>
+      </HBox>
+      <VBox alignment="CENTER" prefHeight="498.0" prefWidth="498.0" spacing="20.0" />
+   </VBox>
+   <Canvas fx:id="canvas" focusTraversable="true" height="1002.0" width="1230.0" />
+</HBox>

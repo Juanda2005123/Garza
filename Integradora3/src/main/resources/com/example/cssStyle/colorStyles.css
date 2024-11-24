@@ -1,0 +1,44 @@
+.first-color {
+    -fx-background-color: #ececec;
+}
+
+.second-color {
+    -fx-background-color: #9fd3c7;
+}
+
+.third-color {
+    -fx-background-color: #385170;
+}
+
+.fourth-color {
+    -fx-background-color:#142d4c;
+
+}
+.fifth-color{
+    -fx-background-color: #00000c;
+}
+
+.text-first-color {
+    -fx-text-fill: #ececec;
+}
+
+.text-second-color {
+    -fx-text-fill: #9fd3c7;
+}
+
+.text-third-color {
+    -fx-text-fill: #385170;
+}
+
+.text-fourth-color {
+    -fx-text-fill:#142d4c;
+}
+.text-bold-first-color {
+    -fx-text-fill: #ececec;
+    -fx-font-weight: bold;
+}
+
+.text-bold-fourth-color {
+    -fx-text-fill:#142d4c;
+    -fx-font-weight: bold
+}
