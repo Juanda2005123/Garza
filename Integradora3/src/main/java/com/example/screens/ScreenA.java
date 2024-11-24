@@ -16,7 +16,8 @@ public class ScreenA {
     private Canvas canvas;
     private GraphicsContext graphicsContext;
     private Player player;
-
+    private ArrayList<Animal> animals;
+    private ArrayList<Tool> tools;
 
 
     public Player getPlayer() {
@@ -26,12 +27,38 @@ public class ScreenA {
         this.canvas = canvas;
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.player = new Player(this.canvas);
-
+        animals = new ArrayList<>();
+        tools = new ArrayList<>();
         player.setPosition(167,210);
+        initEnemies();
+        initTools();
 
     }
 
+    /**
+     * The function initializes enemy objects with specific positions and adds them to a list of
+     * enemies.
+     */
+    private void initEnemies(){
+        Sheep animal = new Sheep(canvas,550,510);
+        animals.add(animal);
 
+        Cow animal2 = new Cow(canvas, 500,210);
+        animals.add(animal2);
+
+        Goat animal3 = new Goat(canvas, 120, 300);
+        animals.add(animal3);
+
+
+    }
+    private void initTools(){
+        Tool sword = new Tool(canvas, ToolType.SWORD, 100, 100);
+        Tool hammer = new Tool(canvas, ToolType.HAMMER, 300, 100);
+        Tool axe = new Tool(canvas, ToolType.AXE, 700, 100);
+        tools.add(sword);
+        tools.add(hammer);
+        tools.add(axe);
+    }
 
     /**
      * The paint() function is responsible for drawing the game elements on the screen, handling
@@ -42,6 +69,19 @@ public class ScreenA {
         graphicsContext.drawImage(image,0,0,1230,1002);
 
         player.paint();
+        for (var animal:
+             animals) {
+            animal.paint();
+            animal.onMove();
+        }
+        for(var tool: tools){
+            tool.paint();
+        }
+
+
+
+
+
     }
     /**
      * The function onKeyPressed calls the onKeyPressed method of the bomberMan object, passing in the

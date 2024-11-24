@@ -84,14 +84,14 @@ public class Controller {
      * object.
      */
     public void handleScreenB(){
-        gameScreenController.screenBStart();
+        //gameScreenController.screenBStart();
     }
     /**
      * The function handlesScreenC() calls the screenCStart() method in the gameScreenController
      * object.
      */
     public void handlesScreenC(){
-        gameScreenController.screenCStart();
+        //gameScreenController.screenCStart();
     }
 
 }

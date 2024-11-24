@@ -37,8 +37,8 @@ public class GameScreenController implements Initializable {
 
     private GraphicsContext graphicsContext;
     private ScreenA screenA;
-    private ScreenB screenB;
-    private ScreenC screenC;
+    //private ScreenB screenB;
+    //private ScreenC screenC;
     private Controller controller;
     private Stage stage;
 
@@ -100,7 +100,15 @@ public class GameScreenController implements Initializable {
                     if(screenA!=null)
                         screenA.onKeyPressed(keyEvent);
                 }
-
+                /**case SECONDSTAGE -> {
+                    if(screenB!=null)
+                        screenB.onKeyPressed(keyEvent);
+                }
+                case THIRDSTAGE -> {
+                    if(screenC!=null)
+                        screenC.onKeyPressed(keyEvent);
+                }
+                 */
             }
         });
 
@@ -110,7 +118,16 @@ public class GameScreenController implements Initializable {
                     if(screenA!=null)
                         screenA.onKeyRelease(keyEvent);
                 }
-
+                /**
+                case SECONDSTAGE -> {
+                    if(screenB!=null)
+                        screenB.onKeyRelease(keyEvent);
+                }
+                case THIRDSTAGE -> {
+                    if(screenC!=null)
+                        screenC.onKeyRelease(keyEvent);
+                }
+                 */
             }
         });
 
@@ -135,7 +152,51 @@ public class GameScreenController implements Initializable {
         }).start();
 
     }
+    /**
+    public void screenBStart() {
+        screenB = new ScreenB(this.canvas, screenA.getPlayer());
+        stage = Stage.SECONDSTAGE;
+        screenA = null;
+        new Thread(() -> {
+            while (stage == Stage.SECONDSTAGE) {
+                Platform.runLater(() -> {
+                    if (screenB != null)
+                        screenB.paint();
+                });
 
+
+                try {
+                    Thread.sleep(45);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+    public void screenCStart(){
+        screenC = new ScreenC(this.canvas, screenB.getPlayer());
+        stage = Stage.THIRDSTAGE;
+        screenB = null;
+        new Thread(() -> {
+            while (stage == Stage.THIRDSTAGE) {
+                Platform.runLater(() -> {
+                    if(screenC!=null)
+                        screenC.paint();
+                });
+
+                try {
+                    Thread.sleep(45);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+
+
+    }
+     */
 
     
 
