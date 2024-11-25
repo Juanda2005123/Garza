@@ -1,6 +1,7 @@
 package com.example.control;
 
 import com.example.model.Stage;
+import com.example.model.ToolType;
 import com.example.screens.ScreenA;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -155,52 +156,26 @@ public class GameScreenController implements Initializable {
         }).start();
 
     }
-    /**
-    public void screenBStart() {
-        screenB = new ScreenB(this.canvas, screenA.getPlayer());
-        stage = Stage.SECONDSTAGE;
-        screenA = null;
-        new Thread(() -> {
-            while (stage == Stage.SECONDSTAGE) {
-                Platform.runLater(() -> {
-                    if (screenB != null)
-                        screenB.paint();
-                });
 
-
-                try {
-                    Thread.sleep(45);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    public void highlightTool(ToolType toolType) {
+        switch (toolType) {
+            case AXE -> {
+                axe.setStyle("-fx-border-color: yellow; -fx-border-width: 3;"); // Resaltar
+                hammer.setStyle(null);
+                sword.setStyle(null);
             }
-        }).start();
-
-    }
-    public void screenCStart(){
-        screenC = new ScreenC(this.canvas, screenB.getPlayer());
-        stage = Stage.THIRDSTAGE;
-        screenB = null;
-        new Thread(() -> {
-            while (stage == Stage.THIRDSTAGE) {
-                Platform.runLater(() -> {
-                    if(screenC!=null)
-                        screenC.paint();
-                });
-
-                try {
-                    Thread.sleep(45);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            case HAMMER -> {
+                axe.setStyle(null);
+                hammer.setStyle("-fx-border-color: yellow; -fx-border-width: 3;");
+                sword.setStyle(null);
             }
-
-        }).start();
-
-
+            case SWORD -> {
+                axe.setStyle(null);
+                hammer.setStyle(null);
+                sword.setStyle("-fx-border-color: yellow; -fx-border-width: 3;");
+            }
+        }
     }
-     */
-
     
 
 }

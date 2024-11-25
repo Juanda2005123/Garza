@@ -61,9 +61,12 @@ public class Controller {
      * @param gameScreenController The gameScreenController parameter is an instance of the
      * GameScreenController class.
      */
-    public void setGameScreenController(GameScreenController gameScreenController){
+    public void setGameScreenController(GameScreenController gameScreenController) {
         this.gameScreenController = gameScreenController;
+    }
 
+    public GameScreenController getGameScreenController() {
+        return gameScreenController;
     }
     public void updatePoints(int points){
         this.points += points;

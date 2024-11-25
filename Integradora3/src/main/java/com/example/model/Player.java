@@ -43,6 +43,9 @@ public class Player {
     private double speed;
     private Controller controller;
 
+    private ToolType currentTool; // Herramienta actualmente equipada
+    public boolean[] toolsCollected; // Registro de herramientas recogidas
+
     /**
      * The function sets the position of an object.
      *
@@ -76,6 +79,11 @@ public class Player {
         keyPressed = new boolean[5];
         for (int i = 0; i < 5; i++) {
             keyPressed[i] = false;
+        }
+        this.currentTool = null; // Sin herramienta equipada al inicio
+        this.toolsCollected = new boolean[3]; // Tres herramientas posibles: Hacha, Martillo, Espada
+        for (int i = 0; i < toolsCollected.length; i++) {
+            toolsCollected[i] = false; // Ninguna herramienta recogida inicialmente
         }
         System.out.println("antes imagenes");
         initImages();
@@ -387,6 +395,28 @@ public class Player {
      */
     public Canvas getCanvas(){
         return this.canvas;
+    }
+
+    public void equipTool(int toolIndex) {
+        if (toolIndex < 0 || toolIndex >= toolsCollected.length) {
+            System.out.println("Índice de herramienta no válido.");
+            return;
+        }
+
+        if (toolsCollected[toolIndex]) {
+            switch (toolIndex) {
+                case 0 -> currentTool = ToolType.AXE;
+                case 1 -> currentTool = ToolType.HAMMER;
+                case 2 -> currentTool = ToolType.SWORD;
+            }
+            System.out.println("Herramienta equipada: " + currentTool);
+        } else {
+            System.out.println("No has recogido esta herramienta aún.");
+        }
+    }
+
+    public ToolType getCurrentTool() {
+        return currentTool; // Devuelve la herramienta equipada actualmente
     }
 
 }

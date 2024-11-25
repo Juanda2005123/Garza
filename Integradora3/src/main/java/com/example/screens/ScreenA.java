@@ -20,6 +20,8 @@ public class ScreenA {
     private ArrayList<Tool> tools;
     private Controller controller;  // Instancia del controlador central
 
+    private ArrayList<Obstacle> obstacles; // Lista de obstáculos
+
 
     public Player getPlayer() {
         return player;
@@ -29,12 +31,13 @@ public class ScreenA {
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.player = new Player(this.canvas);
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
+        this.obstacles = new ArrayList<>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
         player.setPosition(167,210);
         initEnemies();
         initTools();
-
+        initObstacles(); // Inicializar obstáculos
     }
 
     /**
@@ -53,7 +56,11 @@ public class ScreenA {
 
 
     }
-
+    private void initObstacles() {
+        obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
+        obstacles.add(new Obstacle(canvas, ToolType.HAMMER, 600, 300));
+        obstacles.add(new Obstacle(canvas, ToolType.SWORD, 200, 500));
+    }
     private void updateInterfaceWithTool(ToolType toolType) {
         switch (toolType) {
             case AXE -> {
@@ -105,6 +112,11 @@ public class ScreenA {
             animal.paint();
             animal.onMove();
         }
+        // Pintar animales y manejar su movimiento
+        for (Animal animal : animals) {
+            animal.paint();
+            animal.onMove();
+        }
     }
 
     /**
@@ -116,21 +128,56 @@ public class ScreenA {
     public void onKeyPressed(KeyEvent event) {
         player.onKeyPressed(event);
 
-        if (event.getCode().toString().equals("G")) { // Si se presiona G
-            for (int i = 0; i < tools.size(); i++) {
-                Tool tool = tools.get(i);
-                if (player.checkCollision(tool.getPosition(), 50, 50)) {
-                    System.out.println("Recogiendo herramienta: " + tool.getToolType());
-                    tools.remove(i);  // Eliminar herramienta del mapa
-                    updateInterfaceWithTool(tool.getToolType());  // Actualizar interfaz
-
-                    controller.updatePoints(10);  // Incrementar puntos
-                    System.out.println("Puntos obtenidos: 10");
-                    break;  // Salir del bucle para evitar problemas al modificar la lista
+        switch (event.getCode().toString()) {
+            case "G" -> { // Interacción con herramientas
+                for (int i = 0; i < tools.size(); i++) {
+                    Tool tool = tools.get(i);
+                    if (player.checkCollision(tool.getPosition(), 50, 50)) {
+                        tools.remove(i); // Eliminar herramienta del mapa
+                        updateInterfaceWithTool(tool.getToolType()); // Actualizar interfaz
+                        controller.updatePoints(10); // Incrementar puntos
+                        // Marcar herramienta como recogida
+                        switch (tool.getToolType()) {
+                            case AXE -> player.toolsCollected[0] = true;
+                            case HAMMER -> player.toolsCollected[1] = true;
+                            case SWORD -> player.toolsCollected[2] = true;
+                        }
+                        break;
+                    }
                 }
             }
+            case "H" -> { // Interacción con obstáculos
+                for (int i = 0; i < obstacles.size(); i++) {
+                    Obstacle obstacle = obstacles.get(i);
+                    if (player.checkCollision(obstacle.getPosition(), 50, 50)) {
+                        if (player.getCurrentTool() == obstacle.getRequiredTool()) { // Verificar herramienta
+                            System.out.println("Obstáculo eliminado con: " + obstacle.getRequiredTool());
+                            obstacles.remove(i); // Eliminar obstáculo del mapa
+                            controller.updatePoints(20); // Incrementar puntos
+                            break;
+                        } else {
+                            System.out.println("Herramienta incorrecta para este obstáculo.");
+                        }
+                    }
+                }
+            }
+
+            case "DIGIT1" -> { // Seleccionar hacha
+                player.equipTool(0);
+                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+            }
+            case "DIGIT2" -> { // Seleccionar martillo
+                player.equipTool(1);
+                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+            }
+            case "DIGIT3" -> { // Seleccionar espada
+                player.equipTool(2);
+                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+            }
+            default -> System.out.println("Tecla no asignada: " + event.getCode());
         }
     }
+
 
     /**
      * The function calls the onKeyRelease method of the bomberMan object, passing in the KeyEvent
@@ -139,6 +186,8 @@ public class ScreenA {
      * @param event The event parameter is an object of type KeyEvent, which represents a key release
      * event.
      */
+
+
     public void onKeyRelease(KeyEvent event){
         this.player.onKeyRelease(event);
     }
