@@ -22,6 +22,8 @@ public class ScreenA {
 
     private ArrayList<Obstacle> obstacles; // Lista de obstáculos
 
+    private ArrayList<Tree> trees; // Lista de árboles
+
 
     public Player getPlayer() {
         return player;
@@ -32,14 +34,22 @@ public class ScreenA {
         this.player = new Player(this.canvas);
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
         this.obstacles = new ArrayList<>();
+        this.trees = new ArrayList<>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
         player.setPosition(167,210);
         initEnemies();
         initTools();
         initObstacles(); // Inicializar obstáculos
+        initTrees(); // Inicializar árboles
     }
 
+
+    private void initTrees() {
+        trees.add(new Tree(300, 400, 50, 70));
+        trees.add(new Tree(500, 300, 50, 70));
+        trees.add(new Tree(700, 200, 50, 70));
+    }
     /**
      * The function initializes enemy objects with specific positions and adds them to a list of
      * enemies.
@@ -53,8 +63,6 @@ public class ScreenA {
 
         Goat animal3 = new Goat(canvas, 120, 300);
         animals.add(animal3);
-
-
     }
     private void initObstacles() {
         obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
@@ -96,6 +104,11 @@ public class ScreenA {
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
         player.paint();
+
+        // Pintar árboles
+        for (Tree tree : trees) {
+            tree.paint(graphicsContext);
+        }
 
         // Pintar herramientas restantes y mostrar "G" si el jugador está cerca
         for (Tool tool : tools) {
@@ -163,21 +176,22 @@ public class ScreenA {
                     }
                 }
             }
-            case "H" -> { // Interacción con obstáculos
-                for (int i = 0; i < obstacles.size(); i++) {
-                    Obstacle obstacle = obstacles.get(i);
-                    if (player.checkCollision(obstacle.getPosition(), 50, 50)) {
-                        if (player.getCurrentTool() == obstacle.getRequiredTool()) { // Verificar herramienta
-                            System.out.println("Obstáculo eliminado con: " + obstacle.getRequiredTool());
-                            obstacles.remove(i); // Eliminar obstáculo del mapa
-                            controller.updatePoints(20); // Incrementar puntos
+            case "H" -> { // Interacción con árboles
+                for (int i = 0; i < trees.size(); i++) {
+                    Tree tree = trees.get(i);
+                    if (tree.getHitBox().intersects(player.getPosition().getX(), player.getPosition().getY(), 51, 90)) {
+                        if (player.getCurrentTool() == ToolType.AXE) { // Verificar si tiene el hacha
+                            System.out.println("Árbol talado con el hacha.");
+                            trees.remove(i); // Eliminar árbol del mapa
+                            controller.updatePoints(15); // Incrementar puntos
                             break;
                         } else {
-                            System.out.println("Herramienta incorrecta para este obstáculo.");
+                            System.out.println("Necesitas un hacha para talar este árbol.");
                         }
                     }
                 }
             }
+
 
             case "DIGIT1" -> { // Seleccionar hacha
                 player.equipTool(0);

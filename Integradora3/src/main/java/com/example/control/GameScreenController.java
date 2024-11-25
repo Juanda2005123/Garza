@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -162,24 +161,18 @@ public class GameScreenController implements Initializable {
     }
 
     public void highlightTool(ToolType toolType) {
+        axe.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 0;");
+        hammer.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 0;");
+        sword.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 0;");
+
         switch (toolType) {
-            case AXE -> {
-                axe.setStyle("-fx-border-color: yellow; -fx-border-width: 3;"); // Resaltar
-                hammer.setStyle(null);
-                sword.setStyle(null);
-            }
-            case HAMMER -> {
-                axe.setStyle(null);
-                hammer.setStyle("-fx-border-color: yellow; -fx-border-width: 3;");
-                sword.setStyle(null);
-            }
-            case SWORD -> {
-                axe.setStyle(null);
-                hammer.setStyle(null);
-                sword.setStyle("-fx-border-color: yellow; -fx-border-width: 3;");
-            }
+            case AXE -> axe.setStyle("-fx-background-color: yellow; -fx-border-color: yellow; -fx-border-width: 3;");
+            case HAMMER -> hammer.setStyle("-fx-background-color: yellow; -fx-border-color: yellow; -fx-border-width: 3;");
+            case SWORD -> sword.setStyle("-fx-background-color: yellow; -fx-border-color: yellow; -fx-border-width: 3;");
         }
     }
+
+
     
 
 }

@@ -13,7 +13,7 @@ public class ExecutableApplication extends Application {
     // application is launched.
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ExecutableApplication.class.getResource("/com/example/vista/start-game-screen.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1728, 1002); //90% Full HD
+        Scene scene = new Scene(fxmlLoader.load(), 300, 300); //90% Full HD
         stage.setTitle("Stardew Valleyk");
         stage.setScene(scene);
         stage.show();
