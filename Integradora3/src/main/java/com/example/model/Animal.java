@@ -33,6 +33,7 @@ public abstract class Animal {
     protected int distance;
     protected int speed;
 
+    private int healthPoints;
 
     /**
      * The function returns a Timer object.
@@ -84,7 +85,7 @@ public abstract class Animal {
         frame = 0;
         frameTime = 0;
         alive = Alive.ALIVE;
-
+        healthPoints = 5;
         runDown = new ArrayList<>();
         runUp = new ArrayList<>();
         runLeft = new ArrayList<>();
@@ -221,6 +222,10 @@ public abstract class Animal {
     public Position getPosition(){
         return position;
     }
+
+    public int getHP(){return this.healthPoints;}
+
+    public void setHP(int healthPoints){this.healthPoints = healthPoints;}
 
 }
 

@@ -44,6 +44,7 @@ public class Player {
     private Controller controller;
 
     private ToolType currentTool; // Herramienta actualmente equipada
+
     public boolean[] toolsCollected; // Registro de herramientas recogidas
 
     /**

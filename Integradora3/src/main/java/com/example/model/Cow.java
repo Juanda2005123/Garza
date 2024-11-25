@@ -8,7 +8,9 @@ public class Cow extends Animal{
 
 
     public Cow(Canvas canvas, double x, double y) {
+
         super(canvas, x, y, "/com/example/img/animals/cow");
+        this.setHP(this.getHP() + 4);
     }
 
 

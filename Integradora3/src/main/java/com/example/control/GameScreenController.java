@@ -157,6 +157,10 @@ public class GameScreenController implements Initializable {
 
     }
 
+    public void screenBStart(){
+        
+    }
+
     public void highlightTool(ToolType toolType) {
         switch (toolType) {
             case AXE -> {

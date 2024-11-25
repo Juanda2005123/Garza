@@ -1,5 +1,4 @@
 package com.example.screens;
-
 import com.example.control.Controller;
 import com.example.model.*;
 import javafx.scene.canvas.Canvas;
@@ -10,8 +9,8 @@ import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ScreenA {
-    private final String PATH = "/com/example/img/stage";
+public class ScreenB {
+    private final String PATH = "/com/example/img/MountainSprite2";
 
     private Canvas canvas;
     private GraphicsContext graphicsContext;
@@ -26,7 +25,7 @@ public class ScreenA {
     public Player getPlayer() {
         return player;
     }
-    public ScreenA(Canvas canvas) {
+    public ScreenB(Canvas canvas) {
         this.canvas = canvas;
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.player = new Player(this.canvas);
@@ -122,26 +121,9 @@ public class ScreenA {
     /**
      * The function onKeyPressed calls the onKeyPressed method of the bomberMan object, passing in the
      * KeyEvent event as a parameter.
-     * 
+     *
      * @param event The event parameter is of type KeyEvent, which represents a key press event.
      */
-
-    public void attack(){
-        for (int i = 0; i < obstacles.size(); i++) {
-            Obstacle obstacle = obstacles.get(i);
-            if (player.checkCollision(obstacle.getPosition(), 50, 50)) {
-                if (player.getCurrentTool() == obstacle.getRequiredTool()) { // Verificar herramienta
-
-                    System.out.println("Obstáculo eliminado con: " + obstacle.getRequiredTool());
-                    obstacles.remove(i); // Eliminar obstáculo del mapa
-                    controller.updatePoints(20); // Incrementar puntos
-                    break;
-                } else {
-                    System.out.println("Herramienta incorrecta para este obstáculo.");
-                }
-            }
-        }
-    }
     public void onKeyPressed(KeyEvent event) {
         player.onKeyPressed(event);
 
@@ -168,6 +150,7 @@ public class ScreenA {
                     Obstacle obstacle = obstacles.get(i);
                     if (player.checkCollision(obstacle.getPosition(), 50, 50)) {
                         if (player.getCurrentTool() == obstacle.getRequiredTool()) { // Verificar herramienta
+                            //obstacle.damage(player.getCurrentTool().getClass().get);
                             System.out.println("Obstáculo eliminado con: " + obstacle.getRequiredTool());
                             obstacles.remove(i); // Eliminar obstáculo del mapa
                             controller.updatePoints(20); // Incrementar puntos
@@ -199,7 +182,7 @@ public class ScreenA {
     /**
      * The function calls the onKeyRelease method of the bomberMan object, passing in the KeyEvent
      * event as a parameter.
-     * 
+     *
      * @param event The event parameter is an object of type KeyEvent, which represents a key release
      * event.
      */

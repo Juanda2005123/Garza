@@ -7,7 +7,9 @@ public class Goat extends Animal{
     private final String PATH = "/com/example/img/animals/goat";
 
     public Goat(Canvas canvas, double x, double y) {
+
         super(canvas, x, y, "/com/example/img/animals/goat");
+        this.setHP(this.getHP() + 8);
     }
 
 

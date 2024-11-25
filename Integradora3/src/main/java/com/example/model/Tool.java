@@ -14,7 +14,8 @@ public class Tool {
     private Image hammer;
     private Image axe;
     private Image sword;
-
+    private int fullDamage;
+    private int minimunDamage;
     private Position position;
 
     public Tool(Canvas canvas, ToolType toolType, int x, int y) {
@@ -22,7 +23,8 @@ public class Tool {
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.toolType = toolType;
         this.position = new Position(x,y);
-
+        this.minimunDamage = 1;
+        this.fullDamage = 4;
         initImages();
     }
 
@@ -75,4 +77,8 @@ public class Tool {
     public void setPosition(Position position) {
         this.position = position;
     }
+    public int getFullDamage(){return this.fullDamage;}
+    public void setFullDamage(int fullDamage){this.fullDamage = fullDamage;}
+    public int getMinimunDamage(){return this.minimunDamage;}
+    public void setMinimunDamage(int minimunDamage){this.minimunDamage = minimunDamage;}
 }
