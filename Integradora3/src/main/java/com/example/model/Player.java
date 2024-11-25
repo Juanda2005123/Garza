@@ -333,27 +333,42 @@ public class Player {
      * The function `onMove()` handles the movement of an object based on the keys pressed, while also
      * checking for collisions and updating the object's position accordingly.
      */
-    public void onMove(){
-        System.out.println("Y"+position.getY());
-        System.out.println("X"+position.getX());
-        if(alive == Alive.ALIVE){
-            if(keyPressed[0]){
-                position.setY(position.getY() + speed);
-                System.out.println("COLISIONES");
-            } else if (keyPressed[1]) {
-                position.setY(position.getY() - speed);
-                System.out.println("COLISIONES");
-            } else if (keyPressed[2]) {
-                position.setX(position.getX()-speed);
-                System.out.println("COLISIONES");
-            } else if (keyPressed[3]) {
-                position.setX(position.getX() + speed);
-                System.out.println("COLISIONES");
+    public void onMove() {
+        System.out.println("Y: " + position.getY());
+        System.out.println("X: " + position.getX());
+
+        if (alive == Alive.ALIVE) {
+            double nextX = position.getX();
+            double nextY = position.getY();
+
+            if (keyPressed[0]) { // DOWN
+                nextY += speed;
+            } else if (keyPressed[1]) { // UP
+                nextY -= speed;
+            } else if (keyPressed[2]) { // LEFT
+                nextX -= speed;
+            } else if (keyPressed[3]) { // RIGHT
+                nextX += speed;
             }
 
-
+            // Verificar colisiones con bordes del mapa
+            if (nextX >= 0 && nextX + 51 <= canvas.getWidth() &&
+                    nextY >= 0 && nextY + 90 <= canvas.getHeight()) {
+                position.setX(nextX);
+                position.setY(nextY);
+            } else {
+                System.out.println("Colisión con el borde del mapa.");
+            }
         }
     }
+
+    public boolean checkCollision(Position other, double width, double height) {
+        return position.getX() < other.getX() + width &&
+                position.getX() + 51 > other.getX() &&
+                position.getY() < other.getY() + height &&
+                position.getY() + 90 > other.getY();
+    }
+
 
 
     /**
