@@ -5,10 +5,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-
 import java.util.ArrayList;
 import java.util.Random;
-
+import javafx.scene.shape.*;
 public class Player {
     private final String PATH = "/com/example/img/character";
     //graficos
@@ -46,7 +45,7 @@ public class Player {
     private ToolType currentTool; // Herramienta actualmente equipada
     private Tool[] inventory;
     public boolean[] toolsCollected; // Registro de herramientas recogidas
-
+    private Rectangle hitBox;
     /**
      * The function sets the position of an object.
      *
@@ -75,51 +74,21 @@ public class Player {
         animationSwordLeft = new ArrayList<>();
         animationToolRight = new ArrayList<>();
         animationSwordRight = new ArrayList<>();
-
+        position = new Position( 0, 0);
+        hitBox = new Rectangle(position.getX(), position.getY(), 51, 90);
         speed = 12;
         keyPressed = new boolean[5];
         for (int i = 0; i < 5; i++) {
             keyPressed[i] = false;
         }
         this.currentTool = null; // Sin herramienta equipada al inicio
-        this.inventory = null;
         this.toolsCollected = new boolean[3]; // Tres herramientas posibles: Hacha, Martillo, Espada
         this.inventory = new Tool[3];
         for (int i = 0; i < toolsCollected.length; i++) {
             toolsCollected[i] = false; // Ninguna herramienta recogida inicialmente
-            inventory[i] = null;git
+            inventory[i] = null;
         }
         System.out.println("antes imagenes");
-        initImages();
-    }
-
-    // The above code is defining a constructor for the BomberMan class in Java. It takes a BomberMan
-    // object as a parameter and initializes the instance variables of the new BomberMan object with
-    // the values from the passed BomberMan object. It also initializes several ArrayLists and sets the
-    // values of other instance variables. Finally, it calls the initImages() method.
-    public Player(Player player) {
-        controller = Controller.getInstance();
-        this.canvas = player.getCanvas();
-        this.graphicsContext = player.getGraphicsContext();
-        state = State.IDLEDOWN;
-        frame = player.getFrame();
-        animation = player.getAnimation();
-        countAnimation = player.getCountAnimation();
-        alive = player.getAlive();
-        idle = new ArrayList<>();
-        runDown = new ArrayList<>();
-        runUp = new ArrayList<>();
-        runLeft = new ArrayList<>();
-        runRight = new ArrayList<>();
-        animationToolLeft = new ArrayList<>();
-        animationSwordLeft = new ArrayList<>();
-        animationToolRight = new ArrayList<>();
-        animationSwordRight = new ArrayList<>();
-        speed = player.getSpeed();
-        keyPressed = new boolean[5];
-        for (int i = 0; i < 5; i++) {
-            keyPressed[i] = false;
-        }
         initImages();
     }
 
@@ -258,33 +227,33 @@ public class Player {
      * its current state and animation frames.
      */
     public void paint() {
-        onMove();
-        if(alive==Alive.ALIVE){
-            switch (state){
-                //idle
+        onMove(); // Actualiza la posición
+        if (alive == Alive.ALIVE) {
+            // Dibuja el sprite según el estado actual
+            switch (state) {
                 case IDLEDOWN -> graphicsContext.drawImage(idle.get(0), position.getX(), position.getY(), 51, 90);
                 case IDLEUP -> graphicsContext.drawImage(idle.get(1), position.getX(), position.getY(), 51, 90);
                 case IDLELEFT -> graphicsContext.drawImage(idle.get(2), position.getX(), position.getY(), 51, 90);
                 case IDLERIGHT -> graphicsContext.drawImage(idle.get(3), position.getX(), position.getY(), 51, 90);
-                //runs
                 case DOWN -> graphicsContext.drawImage(runDown.get(frame % 3), position.getX(), position.getY(), 51, 90);
                 case UP -> graphicsContext.drawImage(runUp.get(frame % 3), position.getX(), position.getY(), 51, 90);
                 case LEFT -> graphicsContext.drawImage(runLeft.get(frame % 3), position.getX(), position.getY(), 51, 90);
                 case RIGHT -> graphicsContext.drawImage(runRight.get(frame % 3), position.getX(), position.getY(), 51, 90);
             }
 
+            // Actualiza la hitbox después de dibujar el sprite
+            updateHitBox();
+
+            // Opcional: Dibuja la hitbox para depuración. Comentar antes de jugar.
+            drawHitBox(graphicsContext);
+
             frame++;
-
-            if(frame>5000)
-                frame = 0;
-
-
+            if (frame > 5000) frame = 0;
         } else {
-            System.out.println("No esta alive");
+            System.out.println("No está alive");
         }
-
-
     }
+
 
 
 
@@ -368,6 +337,7 @@ public class Player {
                     nextY >= 0 && nextY + 90 <= canvas.getHeight()) {
                 position.setX(nextX);
                 position.setY(nextY);
+                updateHitBox(); // Asegúrate de actualizar la hitbox al mover
             } else {
                 System.out.println("Colisión con el borde del mapa.");
             }
@@ -382,7 +352,15 @@ public class Player {
     }
 
 
+    public void updateHitBox() {
+        hitBox.setX(position.getX());
+        hitBox.setY(position.getY());
+    }
 
+    public void drawHitBox(GraphicsContext gc) {
+        gc.setStroke(javafx.scene.paint.Color.RED); // Color rojo para la hitbox
+        gc.strokeRect(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight());
+    }
     /**
      * The function returns the position.
      * 

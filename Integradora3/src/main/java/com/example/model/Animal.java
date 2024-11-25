@@ -4,10 +4,11 @@ package com.example.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public abstract class Animal {
+public abstract class Animal implements Collidable {
 
     // Gráficos
     protected Canvas canvas;
@@ -32,7 +33,7 @@ public abstract class Animal {
     protected Timer timer;
     protected int distance;
     protected int speed;
-
+    private Rectangle hitBox;
     private int healthPoints;
 
     /**
@@ -72,9 +73,6 @@ public abstract class Animal {
         this.distance = distance;
     }
 
-    // The above code is defining a class called "Enemy" in Java. This class represents an enemy
-    // character in a game. It takes several parameters including a Canvas object, two Position
-    // objects, a BomberMan object, and some other variables.
     public Animal(Canvas canvas, double x, double y, String Path) {
         speed = 4;
         distance = 150;
@@ -91,11 +89,18 @@ public abstract class Animal {
         runLeft = new ArrayList<>();
         runRight = new ArrayList<>();
         dead = new ArrayList<>();
-
+        hitBox = new Rectangle(position.getX(), position.getY(), 50, 50);
         currentTargetIndex = 0;
         initImages(Path);
     }
-
+    @Override
+    public Rectangle getHitBox() {
+        return hitBox;
+    }
+    @Override
+    public boolean isCollidable() {
+        return true; // Siempre es colisionable
+    }
     /**
      * The function initializes and loads images into different lists for different directions and
      * states.
@@ -119,7 +124,15 @@ public abstract class Animal {
     }
 
 
+    public void updateHitBox() {
+        hitBox.setX(position.getX());
+        hitBox.setY(position.getY());
+    }
 
+    public void drawHitBox(GraphicsContext gc) {
+        gc.setStroke(javafx.scene.paint.Color.RED); // Color rojo para la hitbox
+        gc.strokeRect(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight());
+    }
 
     /**
      * The function sets the position of an object to the specified x and y coordinates.
@@ -171,7 +184,11 @@ public abstract class Animal {
 
             }
             frame++;
+            // Actualiza la hitbox después de dibujar el sprite
+            updateHitBox();
 
+            // Opcional: Dibuja la hitbox para depuración. Comentar antes de jugar.
+            drawHitBox(graphicsContext);
 
         } else {
             if (frame > 10)

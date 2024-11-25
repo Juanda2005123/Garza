@@ -31,7 +31,7 @@ public class ScreenA {
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.player = new Player(this.canvas);
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
-        this.obstacles = new ArrayList<>();
+        this.obstacles = new ArrayList<Obstacle>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
         player.setPosition(167,210);
@@ -123,7 +123,7 @@ public class ScreenA {
      * The function onKeyPressed calls the onKeyPressed method of the bomberMan object, passing in the
      * KeyEvent event as a parameter.
      * 
-     * @param event The event parameter is of type KeyEvent, which represents a key press event.
+     * @param(event) The event parameter is of type KeyEvent, which represents a key press event.
      */
 
     public void useTool(){
@@ -131,8 +131,8 @@ public class ScreenA {
             Obstacle obstacle = obstacles.get(i);
             if (player.checkCollision(obstacle.getPosition(), 50, 50)) {
                 if (player.getCurrentTool() == obstacle.getRequiredTool()) { // Verificar herramienta
-                    Tool[] inventory = player.g
-                    for(int i = 0; i < player.get)
+                    //Tool[] inventory = player.g
+                    //for(int i = 0; i < player.get)
                     System.out.println("Obstáculo eliminado con: " + obstacle.getRequiredTool());
                     obstacles.remove(i); // Eliminar obstáculo del mapa
                     controller.updatePoints(20); // Incrementar puntos
