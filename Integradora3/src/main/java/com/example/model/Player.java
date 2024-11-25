@@ -44,7 +44,7 @@ public class Player {
     private Controller controller;
 
     private ToolType currentTool; // Herramienta actualmente equipada
-
+    private Tool[] inventory;
     public boolean[] toolsCollected; // Registro de herramientas recogidas
 
     /**
@@ -82,9 +82,12 @@ public class Player {
             keyPressed[i] = false;
         }
         this.currentTool = null; // Sin herramienta equipada al inicio
+        this.inventory = null;
         this.toolsCollected = new boolean[3]; // Tres herramientas posibles: Hacha, Martillo, Espada
+        this.inventory = new Tool[3];
         for (int i = 0; i < toolsCollected.length; i++) {
             toolsCollected[i] = false; // Ninguna herramienta recogida inicialmente
+            inventory[i] = null;git
         }
         System.out.println("antes imagenes");
         initImages();

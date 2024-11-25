@@ -11,6 +11,7 @@ public class Obstacle {
     private Position position;
     private ToolType requiredTool; // Herramienta necesaria para eliminar
     private Image obstacleImage;
+    private Alive state;
     private int healthPoints;
     public Obstacle(Canvas canvas, ToolType requiredTool, double x, double y) {
         this.canvas = canvas;
@@ -32,4 +33,13 @@ public class Obstacle {
     public void paint() {
         graphicsContext.drawImage(obstacleImage, position.getX(), position.getY(), 50, 50);
     }
+    public void damage(int damage){
+        this.healthPoints = healthPoints-damage;
+        if(this.healthPoints <= 0){
+            this.setState(Alive.DEAD);
+        }
+
+    }
+    public void setState(Alive state){this.state = state;}
+    public Alive getState(){return this.state;}
 }
