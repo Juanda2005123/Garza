@@ -35,11 +35,30 @@
             <Image url="@../img/objects/tools/blacksword.png" />
          </ImageView>
       </HBox>
-      <VBox alignment="CENTER" prefHeight="498.0" prefWidth="498.0" spacing="20.0" />
+      <VBox alignment="CENTER" prefHeight="498.0" prefWidth="498.0" spacing="20.0">
+         <children>
+            <Label alignment="CENTER" styleClass="text-bold-first-color" stylesheets="@../cssStyle/colorStyles.css" text="Wood" textFill="#eeeeee">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="wood" alignment="CENTER" styleClass="text-bold-first-color" text="0" textFill="#eeeeee">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER" styleClass="text-bold-first-color" stylesheets="@../cssStyle/colorStyles.css" text="Stone" textFill="#eeeeee">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <Label fx:id="stone" alignment="CENTER" styleClass="text-bold-first-color" text="0" textFill="#eeeeee">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+         </children></VBox>
    </VBox>
    <Canvas fx:id="canvas" focusTraversable="true" height="1002.0" width="1230.0" />
-   <Label fx:id="toolMessage" layoutX="10" layoutY="10"
-          text="" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-background-color: black;
-       -fx-padding: 5; -fx-border-radius: 5; -fx-background-radius: 5;"
-          visible="false" />
+   <Label fx:id="toolMessage" layoutX="10" layoutY="10" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-background-color: black;        -fx-padding: 5; -fx-border-radius: 5; -fx-background-radius: 5;" text="" visible="false" />
 </HBox>

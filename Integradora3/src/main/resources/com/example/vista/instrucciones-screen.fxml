@@ -44,7 +44,7 @@
                 </Label>
             </children>
         </VBox>
-        <Label alignment="TOP_CENTER" prefHeight="30.0" styleClass="text-bold-first-color" text="xxxxxxxxxxxxxxxxxxxxxxx">
+        <Label alignment="TOP_CENTER" prefHeight="30.0" styleClass="text-bold-first-color" text="Cano">
             <VBox.margin>
                 <Insets left="30.0" />
             </VBox.margin>
@@ -74,7 +74,7 @@
                 </Label>
             </children>
         </VBox>
-        <Label alignment="TOP_CENTER" prefHeight="30.0" styleClass="text-bold-first-color" text="xxxxxxxxxxxxxxxxxxxxxxxxxxx">
+        <Label alignment="TOP_CENTER" prefHeight="30.0" styleClass="text-bold-first-color" text="Cano">
             <VBox.margin>
                 <Insets left="30.0" />
             </VBox.margin>

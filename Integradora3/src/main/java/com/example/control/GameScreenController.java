@@ -24,6 +24,10 @@ public class GameScreenController implements Initializable {
     @FXML
     private Label points;
     @FXML
+    private Label stone;
+    @FXML
+    private Label wood;
+    @FXML
     private VBox vBox;
 
     @FXML
@@ -115,6 +119,13 @@ public class GameScreenController implements Initializable {
 
     public void updatePoints(int points) {
         this.points.setText(points+"");
+    }
+
+    public void updateWood(int wood) {
+        this.wood.setText(wood+"");
+    }
+    public void updateStone(int stone) {
+        this.stone.setText(wood+"");
     }
 
 
