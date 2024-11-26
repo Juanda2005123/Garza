@@ -54,9 +54,12 @@ public class Tool implements Collidable{
         }
     }
 
+
+
     /**
      * The paint() function draws an image based on the value of the wildCardType variable.
      */
+
     public void paint() {
         switch (toolType) {
 
