@@ -70,6 +70,7 @@ public class StartGameScreenController implements Initializable {
 
             currentStage.setScene(mainScene);
         } catch (IOException e) {
+            e.printStackTrace(); // Imprime el stack trace completo
             throw new RuntimeException(e.getMessage());
         }
 
