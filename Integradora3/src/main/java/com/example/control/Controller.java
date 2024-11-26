@@ -8,6 +8,8 @@ import com.example.screens.Screen;
 import com.example.screens.ScreenA;
 import com.example.screens.ScreenB;
 import javafx.application.Platform;
+import com.example.model.Stage;
+
 
 public class Controller {
 
@@ -97,6 +99,7 @@ public class Controller {
         gameScreenController.updateSword();
     }
 
+
     public void deleteAxe(){gameScreenController.deleteAxe();
     }
     public void deleteHammer(){
@@ -137,18 +140,18 @@ public class Controller {
     }
 
     public void switchToScreenB() {
-        Stage stage = Stage.SECONDSTAGE;
+        stage = Stage.SECONDSTAGE;
         gameScreenController.screenBStart();
     }
 
     public void switchToScreenA() {
-        Stage stage = Stage.FIRSTSTAGE;
+        stage = Stage.FIRSTSTAGE;
         gameScreenController.screenAStart();
     }
 
     public void switchToScreenC() {
-        Stage stage = Stage.FIRSTSTAGE;
-        gameScreenController.screenAStart();
+        stage = Stage.THIRDSTAGE;
+        gameScreenController.screenCStart();
     }
 
     public Stage getStage() {
@@ -173,4 +176,8 @@ public class Controller {
         achievements.printAchievements();
     }
 
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 }

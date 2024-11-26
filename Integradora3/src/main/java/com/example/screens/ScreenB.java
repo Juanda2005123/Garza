@@ -102,12 +102,12 @@ public class ScreenB implements Screen {
         animals.clear();
 
         // Colocar animales en posiciones más separadas y equilibradas
-        animals.add(new Sheep(canvas, 400, 450)); // Separado de otros elementos
-        animals.add(new Cow(canvas, 650, 350));  // Más cerca del borde superior derecho
-        animals.add(new Goat(canvas, 200, 500)); // Más hacia la parte inferior izquierda
-        animals.add(new Sheep(canvas, 500, 150)); // Cerca del centro, pero sin superposición
-        animals.add(new Cow(canvas, 300, 200)); // Zona superior izquierda
-        animals.add(new Goat(canvas, 600, 500)); // Inferior derecha, alejado del resto
+        //animals.add(new Sheep(canvas, 400, 450)); // Separado de otros elementos
+        //animals.add(new Cow(canvas, 650, 350));  // Más cerca del borde superior derecho
+        //animals.add(new Goat(canvas, 200, 500)); // Más hacia la parte inferior izquierda
+        //animals.add(new Sheep(canvas, 500, 150)); // Cerca del centro, pero sin superposición
+        //animals.add(new Cow(canvas, 300, 200)); // Zona superior izquierda
+        //animals.add(new Goat(canvas, 600, 500)); // Inferior derecha, alejado del resto
 
     }
     private void initObstacles() {
@@ -135,10 +135,11 @@ public class ScreenB implements Screen {
     private void initTools() {
         tools.clear();
         // Espada y martillo únicamente
-        Tool sword = new Tool(canvas, ToolType.SWORD, 750, 150); // Esquina superior derecha
-        Tool hammer = new Tool(canvas, ToolType.HAMMER, 150, 450); // Parte inferior izquierda
-        tools.add(sword);
-        tools.add(hammer);
+        //if (player.toolsCollected[1]){
+            Tool hammer = new Tool(canvas, ToolType.HAMMER, 150, 450); // Parte inferior izquierda
+            tools.add(hammer);
+        //}
+
     }
 
 

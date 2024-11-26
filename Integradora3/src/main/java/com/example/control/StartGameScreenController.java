@@ -76,6 +76,7 @@ public class StartGameScreenController implements Initializable {
 
     }
 
+
     /**
      * The function opens a new window displaying instructions by loading an FXML file.
      * 

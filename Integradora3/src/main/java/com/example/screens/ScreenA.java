@@ -25,7 +25,6 @@ public class ScreenA implements Screen {
     private ArrayList<Tree> trees; // Lista de árboles
     private ArrayList<Stone> stones; // Lista de árboles
 
-
     private ScreenB nextScreen;
 
     public Player getPlayer() {
@@ -97,10 +96,16 @@ public class ScreenA implements Screen {
 
 
     private void initAnimals() {
+        Position position1 = new Position(100,300);
+        Position position2 = new Position(600, 200);
+        Position position3 = new Position(700, 150);
+        Position position4 = new Position(1000, 100);
+        Position position5 = new Position(800, 200);
+        Position position6 = new Position(850, 450);
         // Animales ubicados de manera dispersa y lejos de cultivos
-        animals.add(new Sheep(canvas, 100, 300));   // Esquina izquierda superior
-        animals.add(new Cow(canvas, 750, 350));    // Zona derecha
-        animals.add(new Goat(canvas, 400, 200));   // Centro del mapa
+        animals.add(new Sheep(canvas, 100, 900, position1, position2, true));   // Esquina izquierda superior
+        animals.add(new Cow(canvas, 750, 150, position3, position4, true));    // Zona derecha
+        animals.add(new Goat(canvas, 800, 200, position5, position6, false));   // Centro del mapa
     }
 
 
@@ -135,11 +140,15 @@ public class ScreenA implements Screen {
     }
 
     private void initTools() {
+
         tools.clear();
         // Solo mostrar el hacha en esta pantalla
-        Tool axe = new Tool(canvas, ToolType.AXE, 800, 100); // Parte superior derecha
+        //if(player.toolsCollected[0]){
+            Tool axe = new Tool(canvas, ToolType.AXE, 650, 80); // Parte superior derecha
 
-        tools.add(axe);
+            tools.add(axe);
+        //}
+
 
     }
 
@@ -315,8 +324,11 @@ public class ScreenA implements Screen {
                                 crop.harvest(); // Cosechar
                                 controller.updatePoints(10);
                             }
-                        } else if (obstacle instanceof Stone stone) {
-                            if (damage(player, stone)) {
+                            break;
+                        }
+                    } else if(obstacle instanceof Stone stone){
+                        if (player.getInteractionArea().intersects(stone.getHitBox().getX(), stone.getHitBox().getY(), stone.getHitBox().getWidth(), stone.getHitBox().getHeight())){
+                            if(damage(player, stone)){
                                 controller.updatePoints(5);
                             } else {
                                 obstacles.remove(stone);

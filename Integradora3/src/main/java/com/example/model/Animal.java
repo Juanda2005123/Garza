@@ -35,6 +35,8 @@ public abstract class Animal implements Collidable {
     protected int speed;
     private Rectangle hitBox;
     private int healthPoints;
+    private boolean horizontal;
+    private ArrayList<Position> movementPattern;
 
     /**
      * The function returns a Timer object.
@@ -73,7 +75,12 @@ public abstract class Animal implements Collidable {
         this.distance = distance;
     }
 
-    public Animal(Canvas canvas, double x, double y, String Path) {
+    public Animal(Canvas canvas, double x, double y, String Path, Position position1, Position position2, boolean horizontal) {
+        movementPattern = new ArrayList<>();
+        movementPattern.add(position1);
+        movementPattern.add(position2);
+
+        this.horizontal = horizontal;
         speed = 4;
         distance = 150;
         this.canvas = canvas;
@@ -209,24 +216,46 @@ public abstract class Animal implements Collidable {
      */
     public void onMove() {
 
-        // Movimiento básico aleatorio
-        switch ((int) (Math.random() * 4)) {
-            case 0 -> {
-                setPosition(position.getX() + speed, position.getY());
-                setState(State.RIGHT);
+        if(alive==Alive.ALIVE){
+            if(horizontal){
+                if(currentTargetIndex==0){
+                    state = State.LEFT;
+                    position.setX(position.getX()-4);
+
+                    if(position.getX()<movementPattern.get(currentTargetIndex).getX()){
+                        currentTargetIndex = 1;
+                    }
+
+                } else {
+                    state = State.RIGHT;
+                    position.setX(position.getX()+4);
+
+
+                    if(position.getX()>movementPattern.get(currentTargetIndex).getX()){
+                        currentTargetIndex = 0;
+                    }
+                }
+
+            } else {
+                if(currentTargetIndex==0){
+                    state = State.UP;
+                    position.setY(position.getY()-4);
+
+
+                    if(position.getY()<movementPattern.get(currentTargetIndex).getY()){
+                        currentTargetIndex = 1;
+                    }
+
+                } else {
+                    state = State.DOWN;
+                    position.setY(position.getY()+4);
+
+                    if(position.getY()>movementPattern.get(currentTargetIndex).getY()){
+                        currentTargetIndex = 0;
+                    }
+                }
             }
-            case 1 -> {
-                setPosition(position.getX() - speed, position.getY());
-                setState(State.LEFT);
-            }
-            case 2 -> {
-                setPosition(position.getX(), position.getY() + speed);
-                setState(State.DOWN);
-            }
-            case 3 -> {
-                setPosition(position.getX(), position.getY() - speed);
-                setState(State.UP);
-            }
+
         }
     }
 
