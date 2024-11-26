@@ -9,7 +9,7 @@ import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
-
+import java.util.Random;
 public class ScreenA implements Screen{
     private final String PATH = "/com/example/img/stage";
 
@@ -337,6 +337,11 @@ public class ScreenA implements Screen{
             }else{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
+                if (obstacle instanceof Tree tree) {
+                    lootLogs(player);
+                } else if (obstacle instanceof Stone stone) {
+                    lootStones(player);
+                }
             }
             temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
         }else{
@@ -345,6 +350,11 @@ public class ScreenA implements Screen{
             }else{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
+                if (obstacle instanceof Tree tree) {
+                    lootLogs(player);
+                } else if (obstacle instanceof Stone stone) {
+                    lootStones(player);
+                }
             }
 
             temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
@@ -366,6 +376,7 @@ public class ScreenA implements Screen{
             }else{
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
+
             }
             temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
 
@@ -385,5 +396,25 @@ public class ScreenA implements Screen{
             System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (animal.getAlive() == Alive.ALIVE);
+    }
+
+    public void lootLogs(Player player) {
+        Random random = new Random();
+        int lootAmount = random.nextInt(8) + 3; // Genera entre 3 y 10 logs
+        ArrayList<Log> logs = new ArrayList<>();
+        for (int i = 0; i < lootAmount; i++) {
+            logs.add(new Log());
+        }
+        player.addLogs(logs);
+    }
+
+    public void lootStones(Player player) {
+        Random random = new Random();
+        int lootAmount = random.nextInt(8) + 3; // Genera entre 3 y 10 small stones
+        ArrayList<SmallStone> stones = new ArrayList<>();
+        for (int i = 0; i < lootAmount; i++) {
+            stones.add(new SmallStone());
+        }
+        player.addStones(stones);
     }
 }

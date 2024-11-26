@@ -28,6 +28,8 @@ public class Player {
     private ArrayList<Image> runUp;
     //0-2
     private ArrayList<Image> runDown;
+    private ArrayList<Log> logsInventory;
+    private ArrayList<SmallStone> stonesInventory;
     //0-6
     private int frame;
     private int animation;
@@ -93,8 +95,12 @@ public class Player {
             inventory[i] = null;
         }
         System.out.println("antes imagenes");
+        logsInventory = new ArrayList<>();
+        stonesInventory = new ArrayList<>();
         initImages();
     }
+
+    
     public void updateInteractionArea() {
         interactionArea.setCenterX(position.getX() + hitBox.getWidth() / 2);
         interactionArea.setCenterY(position.getY() + hitBox.getHeight() / 2);
@@ -510,5 +516,22 @@ public class Player {
 
     public Tool[] getInventory() {
         return inventory;
+    }
+    public void addLogs(ArrayList<Log> logs) {
+        logsInventory.addAll(logs);
+        System.out.println("Has recogido " + logs.size() + " logs. Total: " + logsInventory.size());
+    }
+
+    public void addStones(ArrayList<SmallStone> stones) {
+        stonesInventory.addAll(stones);
+        System.out.println("Has recogido " + stones.size() + " small stones. Total: " + stonesInventory.size());
+    }
+
+    public ArrayList<Log> getLogsInventory() {
+        return logsInventory;
+    }
+
+    public ArrayList<SmallStone> getStonesInventory() {
+        return stonesInventory;
     }
 }
