@@ -99,6 +99,24 @@ public class ScreenA {
         }
     }
 
+    private void updateInterfaceWithToolDeleted(ToolType toolType) {
+        switch (toolType) {
+            case AXE -> {
+                controller.deleteAxe();  // Actualizar solo el espacio del hacha
+                System.out.println("Hacha seleccionada");
+            }
+            case HAMMER -> {
+                controller.deleteHammer();  // Actualizar solo el espacio del martillo
+                System.out.println("Martillo seleccionado");
+            }
+            case SWORD -> {
+                controller.deleteSword();  // Actualizar solo el espacio de la espada
+                System.out.println("Espada seleccionada");
+            }
+        }
+    }
+
+
     private void initTools(){
         Tool sword = new Tool(canvas, ToolType.SWORD, 100, 100);
         Tool hammer = new Tool(canvas, ToolType.HAMMER, 300, 100);
@@ -291,6 +309,7 @@ public class ScreenA {
     }
 
     public boolean damage(Player player, Animal animal){
+        Alive temporalState;
         if(player.getCurrentTool() == ToolType.SWORD){
             if(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
@@ -298,7 +317,9 @@ public class ScreenA {
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+
+
         }else{
             if(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
@@ -306,7 +327,11 @@ public class ScreenA {
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        if(temporalState == Alive.DEAD){
+            updateInterfaceWithToolDeleted(player.getCurrentTool());
+            player.setCurrentTool(ToolType.NA);
         }
         return (animal.getAlive() == Alive.ALIVE);
     }

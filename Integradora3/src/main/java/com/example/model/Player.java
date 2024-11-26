@@ -475,20 +475,27 @@ public class Player {
         return 1;
     }
 
-    public void reduceDurabilityCurrentTool(ToolType toolType){
+    public Alive reduceDurabilityCurrentTool(ToolType toolType){
         for(int i = 0; i < inventory.length; i++){
             if(inventory[i] != null){
                 if(inventory[i].getToolType() ==  toolType){
-                    if((inventory[i].getDurability() - 1) > 0){
-                        inventory[i].setDurability(inventory[i].getDurability() - 1);
-
-                    }else{
-                        inventory[i].setDurability(0);
-                        inventory[i].setAlive(Alive.DEAD);
+                    System.out.println("------------------------------------------------------\nSi, tipo de arma: " + inventory[i].getDurability() +"\n------------------------------------------------------");
+                    if(inventory[i].reduceDurability() == Alive.DEAD){
+                        toolsCollected[i] = false;
+                        System.out.println("------------------------------------------------------\nNo, tipo de arma: " + inventory[i].getDurability() +"\n------------------------------------------------------");
                     }
-                    return;
+
+                    return inventory[i].getAlive();
                 }
             }
+        }
+        return Alive.ALIVE;
+    }
+
+    public void setCurrentTool(ToolType toolType){
+        this.currentTool = toolType;
+        if(this.currentTool == ToolType.NA){
+            this.currentTool = null;
         }
     }
 

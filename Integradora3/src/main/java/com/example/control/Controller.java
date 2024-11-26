@@ -73,14 +73,22 @@ public class Controller {
         this.gameScreenController.updatePoints(this.points);
     }
 
-    public void updateAxe(){
-        gameScreenController.updateAxe();
+    public void updateAxe(){gameScreenController.updateAxe();
     }
     public void updateHammer(){
         gameScreenController.updateHammer();
     }
     public void updateSword(){
         gameScreenController.updateSword();
+    }
+
+    public void deleteAxe(){gameScreenController.deleteAxe();
+    }
+    public void deleteHammer(){
+        gameScreenController.deleteHammer();
+    }
+    public void deleteSword(){
+        gameScreenController.deleteSword();
     }
     /**
      * The function "handleScreenB" calls the "screenBStart" method in the "gameScreenController"

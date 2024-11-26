@@ -94,6 +94,20 @@ public class GameScreenController implements Initializable {
         sword.setImage(new Image(getClass().getResourceAsStream(PATH + "/objects/tools/sword.png")));
     }
 
+    public void deleteAxe() {
+        axe.setImage(new Image(getClass().getResourceAsStream(PATH+"/objects/tools/blackaxe.png")));
+    }
+
+    public void deleteHammer() {
+        hammer.setImage(new Image(getClass().getResourceAsStream(PATH+"/objects/tools/blackhammer.png")));
+    }
+
+    public void deleteSword() {
+        sword.setImage(new Image(getClass().getResourceAsStream(PATH+"/objects/tools/blacksword.png")));
+    }
+
+
+
 
     public void updatePoints(int points) {
         this.points.setText(points+"");
