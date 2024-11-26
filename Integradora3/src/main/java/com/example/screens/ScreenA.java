@@ -23,6 +23,7 @@ public class ScreenA implements Screen{
     private ArrayList<Obstacle> obstacles; // Lista de obstáculos
 
     private ArrayList<Tree> trees; // Lista de árboles
+    private ArrayList<Stone> stones; // Lista de árboles
 
 
     private ScreenB nextScreen;
@@ -36,10 +37,11 @@ public class ScreenA implements Screen{
         this.player = player;
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
         this.trees = new ArrayList<>();
+        this.stones = new ArrayList<>();
         this.obstacles = new ArrayList<Obstacle>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
-        player.setPosition(167,210);
+        player.setPosition(550, 750); // Coordenadas donde está parado en la imagen
         initAnimals();
         initTools();
 
@@ -51,39 +53,59 @@ public class ScreenA implements Screen{
 
 
     private void initTrees() {
-        trees.add(new Tree(canvas,300, 400, 50, 70));
-        trees.add(new Tree(canvas,500, 300, 50, 70));
-        trees.add(new Tree(canvas,700, 200, 50, 70));
+        trees.clear();
+        // Zona boscosa en la esquina superior izquierda
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int x = 50 + i * 80;  // Espaciado de 80 píxeles
+                int y = 50 + j * 90;
+                trees.add(new Tree(canvas, x, y, 80, 110));
+            }
+        }
+
+        // Árboles individuales distribuidos
+        trees.add(new Tree(canvas, 400, 150, 80, 110));
+        trees.add(new Tree(canvas, 600, 200, 80, 110)); // Retirado de herramientas
+        trees.add(new Tree(canvas, 350, 450, 80, 110)); // Cerca de cultivos, pero no interfiriendo
         obstacles.addAll(trees);
     }
+
+
+
+
+
     private void initCrops() {
-        Crop crop1 = new Crop(canvas, 200, 300);
-        Crop crop2 = new Crop(canvas, 400, 500);
-        obstacles.add(crop1); //
-        obstacles.add(crop2);
+        // Zona exclusiva de cultivos en la parte inferior
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 2; j++) {
+                int x = 250 + i * 60; // Separación horizontal amplia
+                int y = 600 + j * 60; // Ubicados en la parte inferior
+                Crop crop = new Crop(canvas, x, y);
+                obstacles.add(crop);
+            }
+        }
     }
+
 
     private void initStones() {
-        Stone stone1 = new Stone(canvas, 300, 200, 50, 50);
-        Stone stone2 = new Stone(canvas, 500, 400,50, 50);
-        obstacles.add(stone1); //
-        obstacles.add(stone2);
+        // Piedras distribuidas de manera estratégica, evitando obstrucciones directas
+        stones.add(new Stone(canvas, 300, 50, 50, 50));  // Zona superior
+        stones.add(new Stone(canvas, 550, 300, 50, 50)); // Centro-derecha
+        stones.add(new Stone(canvas, 200, 350, 50, 50)); // Centro-izquierda
+        stones.add(new Stone(canvas, 450, 550, 50, 50)); // Cerca de cultivos
+        stones.add(new Stone(canvas, 700, 450, 50, 50)); // Esquina derecha
+        obstacles.addAll(stones);
     }
 
-    /**
-     * The function initializes enemy objects with specific positions and adds them to a list of
-     * enemies.
-     */
-    private void initAnimals(){
-        Sheep animal = new Sheep(canvas,550,510);
-        animals.add(animal);
 
-        Cow animal2 = new Cow(canvas, 500,210);
-        animals.add(animal2);
-
-        Goat animal3 = new Goat(canvas, 120, 300);
-        animals.add(animal3);
+    private void initAnimals() {
+        // Animales ubicados de manera dispersa y lejos de cultivos
+        animals.add(new Sheep(canvas, 100, 300));   // Esquina izquierda superior
+        animals.add(new Cow(canvas, 750, 350));    // Zona derecha
+        animals.add(new Goat(canvas, 400, 200));   // Centro del mapa
     }
+
+
 
     public void setNextScreen(ScreenB screen) {
         this.nextScreen = screen;
@@ -113,14 +135,13 @@ public class ScreenA implements Screen{
         }
     }
 
-    private void initTools(){
-        Tool sword = new Tool(canvas, ToolType.SWORD, 100, 100);
-        Tool hammer = new Tool(canvas, ToolType.HAMMER, 300, 100);
-        Tool axe = new Tool(canvas, ToolType.AXE, 700, 100);
-        tools.add(sword);
-        tools.add(hammer);
+    private void initTools() {
+        tools.clear();
+        // Solo mostrar el hacha en esta pantalla
+        Tool axe = new Tool(canvas, ToolType.AXE, 800, 100); // Parte superior derecha
         tools.add(axe);
     }
+
 
     /**
      * The paint() function is responsible for drawing the game elements on the screen, handling

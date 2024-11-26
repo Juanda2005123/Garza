@@ -22,6 +22,10 @@ public class ScreenB implements Screen {
     private ArrayList<Obstacle> obstacles; // Lista de obstáculos
     private ArrayList<Tree> trees; // Lista de árboles
 
+    private ArrayList<Stone> stones; // Lista de árboles
+
+    private ArrayList<Crop> crops; // Lista de árboles
+
     private ScreenA previousScreen;
 
     public Player getPlayer() {
@@ -34,9 +38,11 @@ public class ScreenB implements Screen {
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
         this.obstacles = new ArrayList<>();
         this.trees = new ArrayList<>();
+        this.stones = new ArrayList<>();
+        this.crops = new ArrayList<>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
-        player.setPosition(167,210);
+        player.setPosition(750, 800); // Coordenadas donde está parado en la imagen
         initEnemies();
         initTools();
         initObstacles(); // Inicializar obstáculos
@@ -50,35 +56,58 @@ public class ScreenB implements Screen {
      * enemies.
      */
     private void initTrees() {
-        trees.add(new Tree(canvas,300, 400, 50, 70));
-        trees.add(new Tree(canvas,500, 300, 50, 70));
-        trees.add(new Tree(canvas,700, 200, 50, 70));
+        trees.clear();
+        // Zona boscosa
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 3; j++) {
+                int x = 50 + i * 70; // Espaciado
+                int y = 50 + j * 90;
+                trees.add(new Tree(canvas, x, y, 80, 110)); // Árbol grande
+            }
+        }
+
+        // Árboles individuales en otras áreas
+        trees.add(new Tree(canvas, 500, 250, 80, 110));
+        trees.add(new Tree(canvas, 600, 350, 80, 110));
         obstacles.addAll(trees);
     }
+
     private void initCrops() {
-        Crop crop1 = new Crop(canvas, 200, 300);
-        Crop crop2 = new Crop(canvas, 400, 500);
-        obstacles.add(crop1); //
-        obstacles.add(crop2);
+        crops.clear();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                int x = 700 + i * 50; // Más a la derecha
+                int y = 650 + j * 50; // Más abajo
+                crops.add(new Crop(canvas, x, y));
+            }
+        }
+        obstacles.addAll(crops);
     }
+
+
 
     private void initStones() {
-        Stone stone1 = new Stone(canvas, 300, 200, 50, 50);
-        Stone stone2 = new Stone(canvas, 500, 400,50, 50);
-        obstacles.add(stone1); //
-        obstacles.add(stone2);
+        stones.clear();
+        stones.add(new Stone(canvas, 450, 200, 50, 50));
+        stones.add(new Stone(canvas, 550, 300, 50, 50));
+        stones.add(new Stone(canvas, 400, 350, 50, 50)); // Mejor distribución
+        stones.add(new Stone(canvas, 350, 450, 50, 50)); // Ajustado para mejor balance
+        stones.add(new Stone(canvas, 600, 400, 50, 50));
+        obstacles.addAll(stones);
     }
 
+
+
     private void initEnemies(){
-        Sheep animal = new Sheep(canvas,550,510);
-        animals.add(animal);
+        animals.clear();
 
-        Cow animal2 = new Cow(canvas, 500,210);
-        animals.add(animal2);
-
-        Goat animal3 = new Goat(canvas, 120, 300);
-        animals.add(animal3);
-
+        // Colocar animales en posiciones más separadas y equilibradas
+        animals.add(new Sheep(canvas, 400, 450)); // Separado de otros elementos
+        animals.add(new Cow(canvas, 650, 350));  // Más cerca del borde superior derecho
+        animals.add(new Goat(canvas, 200, 500)); // Más hacia la parte inferior izquierda
+        animals.add(new Sheep(canvas, 500, 150)); // Cerca del centro, pero sin superposición
+        animals.add(new Cow(canvas, 300, 200)); // Zona superior izquierda
+        animals.add(new Goat(canvas, 600, 500)); // Inferior derecha, alejado del resto
 
     }
     private void initObstacles() {
@@ -103,14 +132,15 @@ public class ScreenB implements Screen {
         }
     }
 
-    private void initTools(){
-        Tool sword = new Tool(canvas, ToolType.SWORD, 100, 100);
-        Tool hammer = new Tool(canvas, ToolType.HAMMER, 300, 100);
-        Tool axe = new Tool(canvas, ToolType.AXE, 700, 100);
+    private void initTools() {
+        tools.clear();
+        // Espada y martillo únicamente
+        Tool sword = new Tool(canvas, ToolType.SWORD, 750, 150); // Esquina superior derecha
+        Tool hammer = new Tool(canvas, ToolType.HAMMER, 150, 450); // Parte inferior izquierda
         tools.add(sword);
         tools.add(hammer);
-        tools.add(axe);
     }
+
 
     /**
      * The paint() function is responsible for drawing the game elements on the screen, handling
@@ -184,37 +214,34 @@ public class ScreenB implements Screen {
                     }
                 }
             }
-            case "H" -> { // Interacción con árboles
-                System.out.println("Intentando talar un árbol..."); // Debugging
-                for (int i = 0; i < trees.size(); i++) {
-                    Tree tree = trees.get(i);
-
-                    // Verificar si el jugador está cerca del árbol
-                    if (tree.getHitBox().intersects(player.getPosition().getX(), player.getPosition().getY(), 51, 90)) {
-                        System.out.println("Jugador está cerca de un árbol."); // Debugging
-
-                        // Verificar si tiene el hacha equipada
-                        if (player.getCurrentTool() == ToolType.AXE) {
-                            System.out.println("Árbol talado con el hacha."); // Debugging
-
-                            // Eliminar el árbol del mapa
-                            trees.remove(i);
-
-                            // Sumar puntos
+            case "H" -> {
+                //Interacción con Animales
+                for(Animal animal : animals){
+                    if (player.getInteractionArea().intersects(animal.getHitBox().getX(), animal.getHitBox().getY(), animal.getHitBox().getWidth(), animal.getHitBox().getHeight())){
+                        if(damage(player, animal)){
+                            controller.updatePoints(5);
+                        }else{
+                            animals.remove(animal);
                             controller.updatePoints(10);
-
-                            // Mostrar mensaje
-                            controller.getGameScreenController().showToolMessage("¡Árbol talado! +10 puntos");
-                            break;
-                        } else {
-                            System.out.println("Necesitas un hacha para talar este árbol."); // Debugging
-                            controller.getGameScreenController().showToolMessage("Necesitas un hacha para talar este árbol");
                         }
                     }
                 }
+                // Interacción con árboles
                 // Interacción con cultivos
                 for (Obstacle obstacle : obstacles) {
-                    if (obstacle instanceof Crop crop) {
+                    if(obstacle instanceof Tree tree){
+                        if (player.getInteractionArea().intersects(tree.getHitBox().getX(), tree.getHitBox().getY(), tree.getHitBox().getWidth(), tree.getHitBox().getHeight())){
+                            if(damage(player, tree)){
+                                controller.updatePoints(5);
+                            }else{
+                                obstacles.remove(tree);
+                                controller.updatePoints(10);
+                            }
+                        }
+                    }else if(obstacle instanceof Crop crop) {
+
+                        //Si el jugador puede plantar
+
                         if (player.getInteractionArea().intersects(
                                 crop.getHitBox().getX(), crop.getHitBox().getY(),
                                 crop.getHitBox().getWidth(), crop.getHitBox().getHeight())) {
@@ -263,5 +290,47 @@ public class ScreenB implements Screen {
 
     public void onKeyRelease(KeyEvent event){
         this.player.onKeyRelease(event);
+    }
+
+    public boolean damage(Player player, Obstacle obstacle){
+        if(player.getCurrentTool() == obstacle.getRequiredTool()){
+            if(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
+                obstacle.setHP(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
+            }else{
+                obstacle.setHP(0);
+                obstacle.setState(Alive.DEAD);
+            }
+            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }else{
+            if(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
+                obstacle.setHP(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
+            }else{
+                obstacle.setHP(0);
+                obstacle.setState(Alive.DEAD);
+            }
+            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        return (obstacle.getState() == Alive.ALIVE);
+    }
+
+    public boolean damage(Player player, Animal animal){
+        if(player.getCurrentTool() == ToolType.SWORD){
+            if(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
+                animal.setHP(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
+            }else{
+                animal.setHP(0);
+                animal.setAlive(Alive.DEAD);
+            }
+            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }else{
+            if(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
+                animal.setHP(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
+            }else{
+                animal.setHP(0);
+                animal.setAlive(Alive.DEAD);
+            }
+            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        return (animal.getAlive() == Alive.ALIVE);
     }
 }

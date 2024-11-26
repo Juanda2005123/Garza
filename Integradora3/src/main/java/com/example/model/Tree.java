@@ -11,7 +11,7 @@ public class Tree extends Obstacle implements Collidable {
 
     public Tree(Canvas canvas, double x, double y, double width, double height) {
         super(canvas, x, y);
-        this.treeImage = new Image(getClass().getResourceAsStream(PATH + "/tree.png"));
+        this.treeImage = new Image(getClass().getResourceAsStream(PATH + "/tree1.png"));
         this.setRequiredTool(ToolType.AXE);
         setCollidable(true);
         setState(Alive.ALIVE);
