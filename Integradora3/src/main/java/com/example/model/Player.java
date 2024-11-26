@@ -461,6 +461,43 @@ public class Player {
     public boolean[] getToolsCollected() {
         return toolsCollected; // Devuelve el estado de las herramientas recogidas
     }
+    public int findCurrentToolFullDamage(ToolType toolType){
+        for(int i = 0; i < inventory.length; i++){
+            if(inventory[i] != null){
+                if(inventory[i].getToolType() ==  toolType){
+                    return inventory[i].getFullDamage();
+                }
+            }
+        }
+        return 0;
+    }
 
+    public int findCurrentToolMinDamage(ToolType toolType){
+        for(int i = 0; i < inventory.length; i++){
+            if(inventory[i] != null){
+                if(inventory[i].getToolType() ==  toolType){
+                    return inventory[i].getMinimunDamage();
+                }
+            }
+        }
+        return 1;
+    }
+
+    public void reduceDurabilityCurrentTool(ToolType toolType){
+        for(int i = 0; i < inventory.length; i++){
+            if(inventory[i] != null){
+                if(inventory[i].getToolType() ==  toolType){
+                    if((inventory[i].getDurability() - 1) > 0){
+                        inventory[i].setDurability(inventory[i].getDurability() - 1);
+
+                    }else{
+                        inventory[i].setDurability(0);
+                        inventory[i].setAlive(Alive.DEAD);
+                    }
+                    return;
+                }
+            }
+        }
+    }
 
 }

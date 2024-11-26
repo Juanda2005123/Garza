@@ -21,7 +21,7 @@ public class Obstacle implements Collidable{
         this.position = new Position(x, y);
         this.requiredTool = requiredTool;
         this.healthPoints = 10;
-
+        this.state = Alive.INEXPUGNABLE;
         this.hitBox = new Rectangle(x, y, 50, 50);
         this.isCollidable = false;
     }
@@ -32,9 +32,11 @@ public class Obstacle implements Collidable{
         this.position = new Position(x, y);
         this.requiredTool = ToolType.NA;
         this.healthPoints = 10;
+        this.state = Alive.INEXPUGNABLE;
         this.hitBox = new Rectangle(x, y, 50, 50);
         this.isCollidable = false;
     }
+
     public void updateHitBox() {
         hitBox.setX(this.position.getX());
         hitBox.setY(this.position.getY());

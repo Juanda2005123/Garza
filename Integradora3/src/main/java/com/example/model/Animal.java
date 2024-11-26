@@ -123,7 +123,7 @@ public abstract class Animal implements Collidable {
         }
     }
 
-
+    public Alive getAlive(){return alive;}
     public void updateHitBox() {
         hitBox.setX(position.getX());
         hitBox.setY(position.getY());

@@ -18,6 +18,8 @@ public class Tool implements Collidable{
     private int fullDamage;
     private int minimunDamage;
     private Position position;
+    private int durability;
+    private Alive alive;
 
     public Tool(Canvas canvas, ToolType toolType, int x, int y) {
         this.canvas = canvas;
@@ -26,7 +28,25 @@ public class Tool implements Collidable{
         this.position = new Position(x,y);
         this.minimunDamage = 1;
         this.fullDamage = 4;
+        durability = 10;
+        this.alive = Alive.ALIVE;
         initImages();
+    }
+
+    public Alive getAlive() {
+        return alive;
+    }
+
+    public void setAlive(Alive alive) {
+        this.alive = alive;
+    }
+
+    public int getDurability() {
+        return durability;
+    }
+
+    public void setDurability(int durability) {
+        this.durability = durability;
     }
 
     public Tool() {
