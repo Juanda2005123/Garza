@@ -286,42 +286,81 @@ public class ScreenB implements Screen {
      * @param event The event parameter is an object of type KeyEvent, which represents a key release
      * event.
      */
-
+    private void updateInterfaceWithToolDeleted(ToolType toolType) {
+        switch (toolType) {
+            case AXE -> {
+                controller.deleteAxe();  // Actualizar solo el espacio del hacha
+                System.out.println("Hacha seleccionada");
+            }
+            case HAMMER -> {
+                controller.deleteHammer();  // Actualizar solo el espacio del martillo
+                System.out.println("Martillo seleccionado");
+            }
+            case SWORD -> {
+                controller.deleteSword();  // Actualizar solo el espacio de la espada
+                System.out.println("Espada seleccionada");
+            }
+        }
+    }
 
     public void onKeyRelease(KeyEvent event){
         this.player.onKeyRelease(event);
     }
 
     public boolean damage(Player player, Obstacle obstacle){
+        Alive temporalState;
+        ToolType tempCurrentTool = player.getCurrentTool();
+
         if(player.getCurrentTool() == obstacle.getRequiredTool()){
             if(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 obstacle.setHP(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
             }else{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
+                if (obstacle instanceof Tree tree) {
+                    lootLogs(player);
+                } else if (obstacle instanceof Stone stone) {
+                    lootStones(player);
+                }
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
         }else{
             if(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
                 obstacle.setHP(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
             }else{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
+                if (obstacle instanceof Tree tree) {
+                    lootLogs(player);
+                } else if (obstacle instanceof Stone stone) {
+                    lootStones(player);
+                }
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        if(temporalState == Alive.DEAD){
+            updateInterfaceWithToolDeleted(tempCurrentTool);
+            player.setCurrentTool(ToolType.NA);
+            System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (obstacle.getState() == Alive.ALIVE);
     }
 
     public boolean damage(Player player, Animal animal){
+        Alive temporalState;
+        ToolType tempCurrentTool = player.getCurrentTool();
         if(player.getCurrentTool() == ToolType.SWORD){
             if(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
             }else{
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
+
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+
+
         }else{
             if(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
@@ -329,8 +368,32 @@ public class ScreenB implements Screen {
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        if(temporalState == Alive.DEAD){
+            updateInterfaceWithToolDeleted(tempCurrentTool);
+            player.setCurrentTool(ToolType.NA);
+            System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (animal.getAlive() == Alive.ALIVE);
+    }
+    public void lootLogs(Player player) {
+        Random random = new Random();
+        int lootAmount = random.nextInt(8) + 3; // Genera entre 3 y 10 logs
+        ArrayList<Log> logs = new ArrayList<>();
+        for (int i = 0; i < lootAmount; i++) {
+            logs.add(new Log());
+        }
+        player.addLogs(logs);
+    }
+
+    public void lootStones(Player player) {
+        Random random = new Random();
+        int lootAmount = random.nextInt(8) + 3; // Genera entre 3 y 10 small stones
+        ArrayList<SmallStone> stones = new ArrayList<>();
+        for (int i = 0; i < lootAmount; i++) {
+            stones.add(new SmallStone());
+        }
+        player.addStones(stones);
     }
 }

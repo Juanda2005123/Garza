@@ -28,6 +28,8 @@ public class Player {
     private ArrayList<Image> runUp;
     //0-2
     private ArrayList<Image> runDown;
+    private ArrayList<Log> logsInventory;
+    private ArrayList<SmallStone> stonesInventory;
     //0-6
     private int frame;
     private int animation;
@@ -93,8 +95,12 @@ public class Player {
             inventory[i] = null;
         }
         System.out.println("antes imagenes");
+        logsInventory = new ArrayList<>();
+        stonesInventory = new ArrayList<>();
         initImages();
     }
+
+    
     public void updateInteractionArea() {
         interactionArea.setCenterX(position.getX() + hitBox.getWidth() / 2);
         interactionArea.setCenterY(position.getY() + hitBox.getHeight() / 2);
@@ -483,21 +489,49 @@ public class Player {
         return 1;
     }
 
-    public void reduceDurabilityCurrentTool(ToolType toolType){
-        for(int i = 0; i < inventory.length; i++){
-            if(inventory[i] != null){
-                if(inventory[i].getToolType() ==  toolType){
-                    if((inventory[i].getDurability() - 1) > 0){
-                        inventory[i].setDurability(inventory[i].getDurability() - 1);
-
-                    }else{
-                        inventory[i].setDurability(0);
-                        inventory[i].setAlive(Alive.DEAD);
-                    }
-                    return;
+    public Alive reduceDurabilityCurrentTool(ToolType toolType){
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null && inventory[i].getToolType() == toolType) {
+                System.out.println("Reduciendo durabilidad de: " + toolType + " Durabilidad actual: " + inventory[i].getDurability());
+                Alive state = inventory[i].reduceDurability();
+                if (state == Alive.DEAD) {
+                    toolsCollected[i] = false;
+                    inventory[i] = null; // Elimina la herramienta del inventario
+                    System.out.println(toolType + " destruido.");
                 }
+                return state;
             }
+        }
+        System.out.println("Herramienta no encontrada: " + toolType);
+        return Alive.ALIVE;
+    }
+
+
+    public void setCurrentTool(ToolType toolType){
+        this.currentTool = toolType;
+        if(this.currentTool == ToolType.NA){
+            this.currentTool = null;
         }
     }
 
+    public Tool[] getInventory() {
+        return inventory;
+    }
+    public void addLogs(ArrayList<Log> logs) {
+        logsInventory.addAll(logs);
+        System.out.println("Has recogido " + logs.size() + " logs. Total: " + logsInventory.size());
+    }
+
+    public void addStones(ArrayList<SmallStone> stones) {
+        stonesInventory.addAll(stones);
+        System.out.println("Has recogido " + stones.size() + " small stones. Total: " + stonesInventory.size());
+    }
+
+    public ArrayList<Log> getLogsInventory() {
+        return logsInventory;
+    }
+
+    public ArrayList<SmallStone> getStonesInventory() {
+        return stonesInventory;
+    }
 }

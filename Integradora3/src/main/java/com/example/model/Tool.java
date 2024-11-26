@@ -44,6 +44,15 @@ public class Tool implements Collidable{
     public int getDurability() {
         return durability;
     }
+    public Alive reduceDurability() {
+        if ((durability - 1) > 0) {
+            this.durability--;
+        } else {
+            durability = 0;
+            this.setAlive(Alive.DEAD);
+        }
+        return this.getAlive();
+    }
 
     public void setDurability(int durability) {
         this.durability = durability;

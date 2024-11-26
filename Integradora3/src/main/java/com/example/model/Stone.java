@@ -14,6 +14,7 @@ public class Stone extends Obstacle implements Collidable {
         this.stoneImage = new Image(getClass().getResourceAsStream(PATH + "/stone.png"));
         this.setRequiredTool(ToolType.HAMMER);
         setCollidable(true);
+        setState(Alive.ALIVE);
     }
 
     public void paint(GraphicsContext gc) {

@@ -9,8 +9,8 @@ import javafx.scene.input.KeyEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-public class ScreenA implements Screen{
+import java.util.Random;
+public class ScreenA implements Screen {
     private final String PATH = "/com/example/img/stage";
 
     private Canvas canvas;
@@ -31,6 +31,7 @@ public class ScreenA implements Screen{
     public Player getPlayer() {
         return player;
     }
+
     public ScreenA(Canvas canvas, Player player) {
         this.canvas = canvas;
         this.graphicsContext = this.canvas.getGraphicsContext2D();
@@ -71,9 +72,6 @@ public class ScreenA implements Screen{
     }
 
 
-
-
-
     private void initCrops() {
         // Zona exclusiva de cultivos en la parte inferior
         for (int i = 0; i < 4; i++) {
@@ -106,10 +104,10 @@ public class ScreenA implements Screen{
     }
 
 
-
     public void setNextScreen(ScreenB screen) {
         this.nextScreen = screen;
     }
+
     private void initObstacles() {
 
         //obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
@@ -118,6 +116,7 @@ public class ScreenA implements Screen{
 
 
     }
+
     private void updateInterfaceWithTool(ToolType toolType) {
         switch (toolType) {
             case AXE -> {
@@ -139,10 +138,27 @@ public class ScreenA implements Screen{
         tools.clear();
         // Solo mostrar el hacha en esta pantalla
         Tool axe = new Tool(canvas, ToolType.AXE, 800, 100); // Parte superior derecha
+
         tools.add(axe);
+
     }
 
-
+    private void updateInterfaceWithToolDeleted(ToolType toolType) {
+        switch (toolType) {
+            case AXE -> {
+                controller.deleteAxe();  // Actualizar solo el espacio del hacha
+                System.out.println("Hacha seleccionada");
+            }
+            case HAMMER -> {
+                controller.deleteHammer();  // Actualizar solo el espacio del martillo
+                System.out.println("Martillo seleccionado");
+            }
+            case SWORD -> {
+                controller.deleteSword();  // Actualizar solo el espacio de la espada
+                System.out.println("Espada seleccionada");
+            }
+        }
+    }
     /**
      * The paint() function is responsible for drawing the game elements on the screen, handling
      * collisions between the player and enemies, and checking for level completion.
@@ -226,10 +242,20 @@ public class ScreenA implements Screen{
                         controller.updatePoints(10); // Incrementar puntos
                         // Marcar herramienta como recogida
                         switch (tool.getToolType()) {
-                            case AXE -> player.toolsCollected[0] = true;
-                            case HAMMER -> player.toolsCollected[1] = true;
-                            case SWORD -> player.toolsCollected[2] = true;
+                            case AXE -> {
+                                player.toolsCollected[0] = true;
+                                player.getInventory()[0] = tool;
+                            }
+                            case HAMMER -> {
+                                player.toolsCollected[1] = true;
+                                player.getInventory()[1] = tool;
+                            }
+                            case SWORD -> {
+                                player.toolsCollected[2] = true;
+                                player.getInventory()[2] = tool;
+                            }
                         }
+
                         break;
                     }
                 }
@@ -276,6 +302,15 @@ public class ScreenA implements Screen{
                             }
                             break;
                         }
+                    }else if(obstacle instanceof Stone stone){
+                        if (player.getInteractionArea().intersects(stone.getHitBox().getX(), stone.getHitBox().getY(), stone.getHitBox().getWidth(), stone.getHitBox().getHeight())){
+                            if(damage(player, stone)){
+                                controller.updatePoints(5);
+                            }else{
+                                obstacles.remove(stone);
+                                controller.updatePoints(10);
+                            }
+                        }
                     }
                 }
             }
@@ -312,35 +347,59 @@ public class ScreenA implements Screen{
         this.player.onKeyRelease(event);
     }
     public boolean damage(Player player, Obstacle obstacle){
+        Alive temporalState;
+        ToolType tempCurrentTool = player.getCurrentTool();
+
         if(player.getCurrentTool() == obstacle.getRequiredTool()){
             if(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 obstacle.setHP(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
             }else{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
+                if (obstacle instanceof Tree tree) {
+                    lootLogs(player);
+                } else if (obstacle instanceof Stone stone) {
+                    lootStones(player);
+                }
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
         }else{
             if(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
                 obstacle.setHP(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
             }else{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
+                if (obstacle instanceof Tree tree) {
+                    lootLogs(player);
+                } else if (obstacle instanceof Stone stone) {
+                    lootStones(player);
+                }
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        if(temporalState == Alive.DEAD){
+            updateInterfaceWithToolDeleted(tempCurrentTool);
+            player.setCurrentTool(ToolType.NA);
+            System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (obstacle.getState() == Alive.ALIVE);
     }
 
     public boolean damage(Player player, Animal animal){
+        Alive temporalState;
+        ToolType tempCurrentTool = player.getCurrentTool();
         if(player.getCurrentTool() == ToolType.SWORD){
             if(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
             }else{
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
+
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+
+
         }else{
             if(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
@@ -348,8 +407,33 @@ public class ScreenA implements Screen{
                 animal.setHP(0);
                 animal.setAlive(Alive.DEAD);
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        if(temporalState == Alive.DEAD){
+            updateInterfaceWithToolDeleted(tempCurrentTool);
+            player.setCurrentTool(ToolType.NA);
+            System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (animal.getAlive() == Alive.ALIVE);
+    }
+
+    public void lootLogs(Player player) {
+        Random random = new Random();
+        int lootAmount = random.nextInt(8) + 3; // Genera entre 3 y 10 logs
+        ArrayList<Log> logs = new ArrayList<>();
+        for (int i = 0; i < lootAmount; i++) {
+            logs.add(new Log());
+        }
+        player.addLogs(logs);
+    }
+
+    public void lootStones(Player player) {
+        Random random = new Random();
+        int lootAmount = random.nextInt(8) + 3; // Genera entre 3 y 10 small stones
+        ArrayList<SmallStone> stones = new ArrayList<>();
+        for (int i = 0; i < lootAmount; i++) {
+            stones.add(new SmallStone());
+        }
+        player.addStones(stones);
     }
 }
