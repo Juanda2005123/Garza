@@ -40,8 +40,9 @@ public class ScreenA {
         player.setPosition(167,210);
         initEnemies();
         initTools();
-        initObstacles(); // Inicializar obstáculos
+
         initTrees(); // Inicializar árboles
+        initObstacles(); // Inicializar obstáculos
     }
 
 
@@ -49,6 +50,7 @@ public class ScreenA {
         trees.add(new Tree(canvas,300, 400, 50, 70));
         trees.add(new Tree(canvas,500, 300, 50, 70));
         trees.add(new Tree(canvas,700, 200, 50, 70));
+        obstacles.addAll(trees);
     }
     /**
      * The function initializes enemy objects with specific positions and adds them to a list of
@@ -65,9 +67,12 @@ public class ScreenA {
         animals.add(animal3);
     }
     private void initObstacles() {
-        obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
-        obstacles.add(new Obstacle(canvas, ToolType.HAMMER, 600, 300));
-        obstacles.add(new Obstacle(canvas, ToolType.SWORD, 200, 500));
+
+        //obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
+        //obstacles.add(new Obstacle(canvas, ToolType.HAMMER, 600, 300));
+        //obstacles.add(new Obstacle(canvas, ToolType.SWORD, 200, 500));
+
+
     }
     private void updateInterfaceWithTool(ToolType toolType) {
         switch (toolType) {
@@ -103,12 +108,9 @@ public class ScreenA {
         Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite1.png"));
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
-        player.paint();
+        player.paint(obstacles, animals);
 
-        // Pintar árboles
-        for (Tree tree : trees) {
-            tree.paint(graphicsContext);
-        }
+
 
         // Pintar herramientas restantes y mostrar "G" si el jugador está cerca
         for (Tool tool : tools) {
@@ -125,10 +127,12 @@ public class ScreenA {
             animal.paint();
             animal.onMove();
         }
-        // Pintar animales y manejar su movimiento
-        for (Animal animal : animals) {
-            animal.paint();
-            animal.onMove();
+        // Pintar obstacles
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle instanceof Tree){
+                ((Tree)obstacle).paint(this.canvas.getGraphicsContext2D());
+            }
+
         }
     }
 

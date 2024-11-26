@@ -14,13 +14,16 @@ public class Obstacle implements Collidable{
     private Alive state;
     private int healthPoints;
     private Rectangle hitBox;
+    private boolean isCollidable;
     public Obstacle(Canvas canvas, ToolType requiredTool, double x, double y) {
         this.canvas = canvas;
         this.graphicsContext = this.canvas.getGraphicsContext2D();
         this.position = new Position(x, y);
         this.requiredTool = requiredTool;
         this.healthPoints = 10;
+
         this.hitBox = new Rectangle(x, y, 50, 50);
+        this.isCollidable = false;
     }
 
     public Obstacle(Canvas canvas, double x, double y) {
@@ -30,12 +33,15 @@ public class Obstacle implements Collidable{
         this.requiredTool = ToolType.NA;
         this.healthPoints = 10;
         this.hitBox = new Rectangle(x, y, 50, 50);
+        this.isCollidable = false;
     }
     public void updateHitBox() {
         hitBox.setX(this.position.getX());
         hitBox.setY(this.position.getY());
     }
-
+    public void setHitBox(double x, double y, int width, int higth){
+        this.hitBox = new Rectangle(x ,y, width, higth);
+    }
     public void drawHitBox(GraphicsContext gc) {
         gc.setStroke(javafx.scene.paint.Color.RED); // Color rojo para la hitbox
         gc.strokeRect(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight());
@@ -46,7 +52,11 @@ public class Obstacle implements Collidable{
     }
     @Override
     public boolean isCollidable() {
-        return true; // Siempre es colisionable
+        return isCollidable;
+    }
+
+    public void setCollidable(boolean value){
+        this.isCollidable = value;
     }
     public Position getPosition() {
         return position;

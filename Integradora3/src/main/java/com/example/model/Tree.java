@@ -13,6 +13,7 @@ public class Tree extends Obstacle implements Collidable {
         super(canvas, x, y);
         this.treeImage = new Image(getClass().getResourceAsStream(PATH + "/tree.png"));
         this.setRequiredTool(ToolType.AXE);
+        setCollidable(true);
     }
 
     public void paint(GraphicsContext gc) {
@@ -23,5 +24,8 @@ public class Tree extends Obstacle implements Collidable {
 
         // Opcional: Dibuja la hitbox para depuración. Comentar antes de jugar.
         drawHitBox(this.getGraphicsContext());
+
     }
+
+
 }

@@ -95,6 +95,8 @@ public class ScreenB {
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
 
+        player.paint(obstacles, animals);
+
         // Pintar herramientas restantes y mostrar "G" si el jugador está cerca
         for (Tool tool : tools) {
             tool.paint();

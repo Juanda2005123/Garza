@@ -226,8 +226,8 @@ public class Player {
      * The paint() function is responsible for rendering the player character on the screen based on
      * its current state and animation frames.
      */
-    public void paint() {
-        onMove(); // Actualiza la posición
+    public void paint(ArrayList<Obstacle> obstacles, ArrayList<Animal> animals) {
+        onMove(obstacles, animals); // Actualiza la posición
         if (alive == Alive.ALIVE) {
             // Dibuja el sprite según el estado actual
             switch (state) {
@@ -314,7 +314,7 @@ public class Player {
      * The function `onMove()` handles the movement of an object based on the keys pressed, while also
      * checking for collisions and updating the object's position accordingly.
      */
-    public void onMove() {
+    public void onMove(ArrayList<Obstacle> obstacles, ArrayList<Animal> animals) {
         System.out.println("Y: " + position.getY());
         System.out.println("X: " + position.getX());
 
@@ -333,16 +333,39 @@ public class Player {
             }
 
             // Verificar colisiones con bordes del mapa
-            if (nextX >= 0 && nextX + 51 <= canvas.getWidth() &&
-                    nextY >= 0 && nextY + 90 <= canvas.getHeight()) {
-                position.setX(nextX);
-                position.setY(nextY);
-                updateHitBox(); // Asegúrate de actualizar la hitbox al mover
+            if (nextX >= 0 && nextX + hitBox.getWidth() <= canvas.getWidth() &&
+                    nextY >= 0 && nextY + hitBox.getHeight() <= canvas.getHeight()) {
+
+                boolean collisionDetected = false;
+
+                // Verificar colisiones con obstáculos
+                for (Obstacle obstacle : obstacles) {
+                    if (obstacle.isCollidable() && checkCollisionWithObstacle(nextX, nextY, obstacle)) {
+                        collisionDetected = true;
+                        break;
+                    }
+                }
+
+                // Solo actualiza la posición si no hay colisión
+                if (!collisionDetected) {
+                    position.setX(nextX);
+                    position.setY(nextY);
+                    updateHitBox();
+                } else {
+                    System.out.println("Colisión con un obstáculo.");
+                }
             } else {
                 System.out.println("Colisión con el borde del mapa.");
             }
         }
     }
+
+    public boolean checkCollisionWithObstacle(double nextX, double nextY, Obstacle obstacle) {
+        // Crea un rectángulo simulado para verificar la posición prevista del jugador
+        Rectangle futureHitBox = new Rectangle(nextX, nextY, hitBox.getWidth(), hitBox.getHeight());
+        return futureHitBox.intersects(obstacle.getHitBox().getBoundsInLocal());
+    }
+
 
     public boolean checkCollision(Position other, double width, double height) {
         return position.getX() < other.getX() + width &&
@@ -350,7 +373,6 @@ public class Player {
                 position.getY() < other.getY() + height &&
                 position.getY() + 90 > other.getY();
     }
-
 
     public void updateHitBox() {
         hitBox.setX(position.getX());
