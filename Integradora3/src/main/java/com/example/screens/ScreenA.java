@@ -283,6 +283,15 @@ public class ScreenA implements Screen{
                             }
                             break;
                         }
+                    }else if(obstacle instanceof Stone stone){
+                        if (player.getInteractionArea().intersects(stone.getHitBox().getX(), stone.getHitBox().getY(), stone.getHitBox().getWidth(), stone.getHitBox().getHeight())){
+                            if(damage(player, stone)){
+                                controller.updatePoints(5);
+                            }else{
+                                obstacles.remove(stone);
+                                controller.updatePoints(10);
+                            }
+                        }
                     }
                 }
             }
