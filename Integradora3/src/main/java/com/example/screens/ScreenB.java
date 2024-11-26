@@ -9,8 +9,8 @@ import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ScreenB {
-    private final String PATH = "/com/example/img/MountainSprite2";
+public class ScreenB implements Screen {
+    private final String PATH = "/com/example/img/stage";
 
     private Canvas canvas;
     private GraphicsContext graphicsContext;
@@ -20,29 +20,55 @@ public class ScreenB {
     private Controller controller;  // Instancia del controlador central
 
     private ArrayList<Obstacle> obstacles; // Lista de obstáculos
+    private ArrayList<Tree> trees; // Lista de árboles
 
+    private ScreenA previousScreen;
 
     public Player getPlayer() {
         return player;
     }
-    public ScreenB(Canvas canvas) {
+    public ScreenB(Canvas canvas, Player player) {
         this.canvas = canvas;
         this.graphicsContext = this.canvas.getGraphicsContext2D();
-        this.player = new Player(this.canvas);
+        this.player = player;
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
         this.obstacles = new ArrayList<>();
+        this.trees = new ArrayList<>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
         player.setPosition(167,210);
         initEnemies();
         initTools();
         initObstacles(); // Inicializar obstáculos
+        initTrees(); // Inicializar árboles
+        initCrops(); // Inicializar cultivos
+        initStones();
     }
 
     /**
      * The function initializes enemy objects with specific positions and adds them to a list of
      * enemies.
      */
+    private void initTrees() {
+        trees.add(new Tree(canvas,300, 400, 50, 70));
+        trees.add(new Tree(canvas,500, 300, 50, 70));
+        trees.add(new Tree(canvas,700, 200, 50, 70));
+        obstacles.addAll(trees);
+    }
+    private void initCrops() {
+        Crop crop1 = new Crop(canvas, 200, 300);
+        Crop crop2 = new Crop(canvas, 400, 500);
+        obstacles.add(crop1); //
+        obstacles.add(crop2);
+    }
+
+    private void initStones() {
+        Stone stone1 = new Stone(canvas, 300, 200, 50, 50);
+        Stone stone2 = new Stone(canvas, 500, 400,50, 50);
+        obstacles.add(stone1); //
+        obstacles.add(stone2);
+    }
+
     private void initEnemies(){
         Sheep animal = new Sheep(canvas,550,510);
         animals.add(animal);
@@ -90,10 +116,16 @@ public class ScreenB {
      * The paint() function is responsible for drawing the game elements on the screen, handling
      * collisions between the player and enemies, and checking for level completion.
      */
+    @Override
     public void paint() {
-        Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite1.png"));
+        Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite2.png"));
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
+        // Detectar si el jugador llega al borde izquierdo para regresar a la pantalla anterior
+        if (player.getPosition().getY() > canvas.getHeight()) { // Detectar borde inferior
+            System.out.println("Cambiando a ScreenA desde el borde inferior...");
+            controller.switchToScreenA(); // Cambiar a ScreenA
+        }
 
         player.paint(obstacles, animals);
 
@@ -112,11 +144,17 @@ public class ScreenB {
             animal.paint();
             animal.onMove();
         }
-        // Pintar animales y manejar su movimiento
-        for (Animal animal : animals) {
-            animal.paint();
-            animal.onMove();
+        // Pintar obstacles
+        for (Obstacle obstacle : obstacles) {
+            if (obstacle instanceof Tree){
+                ((Tree)obstacle).paint(this.canvas.getGraphicsContext2D());
+            }else if(obstacle instanceof Crop){
+                ((Crop)obstacle).paint(this.canvas.getGraphicsContext2D());
+            } else if (obstacle instanceof Stone) {
+                ((Stone)obstacle).paint(this.canvas.getGraphicsContext2D());
+            }
         }
+
     }
 
     /**
@@ -146,34 +184,68 @@ public class ScreenB {
                     }
                 }
             }
-            case "H" -> { // Interacción con obstáculos
-                for (int i = 0; i < obstacles.size(); i++) {
-                    Obstacle obstacle = obstacles.get(i);
-                    if (player.checkCollision(obstacle.getPosition(), 50, 50)) {
-                        if (player.getCurrentTool() == obstacle.getRequiredTool()) { // Verificar herramienta
-                            //obstacle.damage(player.getCurrentTool().getClass().get);
-                            System.out.println("Obstáculo eliminado con: " + obstacle.getRequiredTool());
-                            obstacles.remove(i); // Eliminar obstáculo del mapa
-                            controller.updatePoints(20); // Incrementar puntos
+            case "H" -> { // Interacción con árboles
+                System.out.println("Intentando talar un árbol..."); // Debugging
+                for (int i = 0; i < trees.size(); i++) {
+                    Tree tree = trees.get(i);
+
+                    // Verificar si el jugador está cerca del árbol
+                    if (tree.getHitBox().intersects(player.getPosition().getX(), player.getPosition().getY(), 51, 90)) {
+                        System.out.println("Jugador está cerca de un árbol."); // Debugging
+
+                        // Verificar si tiene el hacha equipada
+                        if (player.getCurrentTool() == ToolType.AXE) {
+                            System.out.println("Árbol talado con el hacha."); // Debugging
+
+                            // Eliminar el árbol del mapa
+                            trees.remove(i);
+
+                            // Sumar puntos
+                            controller.updatePoints(10);
+
+                            // Mostrar mensaje
+                            controller.getGameScreenController().showToolMessage("¡Árbol talado! +10 puntos");
                             break;
                         } else {
-                            System.out.println("Herramienta incorrecta para este obstáculo.");
+                            System.out.println("Necesitas un hacha para talar este árbol."); // Debugging
+                            controller.getGameScreenController().showToolMessage("Necesitas un hacha para talar este árbol");
+                        }
+                    }
+                }
+                // Interacción con cultivos
+                for (Obstacle obstacle : obstacles) {
+                    if (obstacle instanceof Crop crop) {
+                        if (player.getInteractionArea().intersects(
+                                crop.getHitBox().getX(), crop.getHitBox().getY(),
+                                crop.getHitBox().getWidth(), crop.getHitBox().getHeight())) {
+                            if (crop.getCropState() == CropState.EMPTY) {
+                                crop.plant(); // Planta algo en el cultivo
+                                controller.updatePoints(5);
+                            } else if (crop.getCropState() == CropState.GROWN) {
+                                crop.harvest(); // Cosecha
+                                controller.updatePoints(10);
+                            } else {
+                                System.out.println("Este cultivo ya está ocupado.");
+                            }
+                            break;
                         }
                     }
                 }
             }
-
             case "DIGIT1" -> { // Seleccionar hacha
                 player.equipTool(0);
                 controller.getGameScreenController().highlightTool(ToolType.AXE, player.getToolsCollected());
+                controller.getGameScreenController().showToolMessage("Hacha seleccionada");
             }
             case "DIGIT2" -> { // Seleccionar martillo
                 player.equipTool(1);
                 controller.getGameScreenController().highlightTool(ToolType.HAMMER, player.getToolsCollected());
+                controller.getGameScreenController().showToolMessage("Martillo seleccionado");
             }
             case "DIGIT3" -> { // Seleccionar espada
                 player.equipTool(2);
                 controller.getGameScreenController().highlightTool(ToolType.SWORD, player.getToolsCollected());
+                controller.getGameScreenController().showToolMessage("Espada seleccionada");
             }
             default -> System.out.println("Tecla no asignada: " + event.getCode());
         }

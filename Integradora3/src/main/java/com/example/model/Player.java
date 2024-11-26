@@ -326,9 +326,6 @@ public class Player {
      * checking for collisions and updating the object's position accordingly.
      */
     public void onMove(ArrayList<Obstacle> obstacles, ArrayList<Animal> animals) {
-        System.out.println("Y: " + position.getY());
-        System.out.println("X: " + position.getX());
-
         if (alive == Alive.ALIVE) {
             double nextX = position.getX();
             double nextY = position.getY();
@@ -367,10 +364,21 @@ public class Player {
                     System.out.println("Colisión con un obstáculo.");
                 }
             } else {
-                System.out.println("Colisión con el borde del mapa.");
+                // Colisión con el borde del mapa
+                if (nextY < 0) { // Detectar borde superior
+                    System.out.println("Jugador en el borde superior. Cambiando a ScreenB...");
+                    Controller.getInstance().switchToScreenB(); // Cambiar a ScreenB
+                } else if (nextY + hitBox.getHeight() > canvas.getHeight()) { // Detectar borde inferior
+                    System.out.println("Jugador en el borde inferior. Cambiando a ScreenA...");
+                    Controller.getInstance().switchToScreenA(); // Cambiar a ScreenA
+                } else {
+                    System.out.println("Colisión con el borde del mapa.");
+                }
             }
         }
     }
+
+
 
     public boolean checkCollisionWithObstacle(double nextX, double nextY, Obstacle obstacle) {
         // Crea un rectángulo simulado para verificar la posición prevista del jugador

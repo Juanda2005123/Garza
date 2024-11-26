@@ -1,12 +1,21 @@
 package com.example.control;
 
 
+import com.example.model.Stage;
+import com.example.screens.Screen;
+import com.example.screens.ScreenA;
+import com.example.screens.ScreenB;
+import javafx.application.Platform;
+
 public class Controller {
 
     private static Controller controller;
     private int enemies;
     private int points;
     private int stopGame;
+
+    private Screen currentScreen;
+    private Stage stage; // Variable para almacenar el estado actual del escenario
 
     private GameScreenController gameScreenController;
     /**
@@ -95,6 +104,41 @@ public class Controller {
      */
     public void handlesScreenC(){
         //gameScreenController.screenCStart();
+    }
+
+    public void switchScreen(Screen newScreen) {
+        currentScreen = newScreen;
+
+        // Inicia el ciclo de dibujo para la nueva pantalla
+        new Thread(() -> {
+            while (currentScreen != null) {
+                Platform.runLater(() -> currentScreen.paint());
+                try {
+                    Thread.sleep(45);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void switchToScreenB() {
+        Stage stage = Stage.SECONDSTAGE;
+        gameScreenController.screenBStart();
+    }
+
+    public void switchToScreenA() {
+        Stage stage = Stage.FIRSTSTAGE;
+        gameScreenController.screenAStart();
+    }
+
+    public void switchToScreenC() {
+        Stage stage = Stage.FIRSTSTAGE;
+        gameScreenController.screenAStart();
+    }
+
+    public Stage getStage() {
+        return this.stage;
     }
 
 }

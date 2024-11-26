@@ -10,7 +10,7 @@ import javafx.scene.input.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ScreenA {
+public class ScreenA implements Screen{
     private final String PATH = "/com/example/img/stage";
 
     private Canvas canvas;
@@ -25,13 +25,15 @@ public class ScreenA {
     private ArrayList<Tree> trees; // Lista de árboles
 
 
+    private ScreenB nextScreen;
+
     public Player getPlayer() {
         return player;
     }
-    public ScreenA(Canvas canvas) {
+    public ScreenA(Canvas canvas, Player player) {
         this.canvas = canvas;
         this.graphicsContext = this.canvas.getGraphicsContext2D();
-        this.player = new Player(this.canvas);
+        this.player = player;
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
         this.trees = new ArrayList<>();
         this.obstacles = new ArrayList<Obstacle>();
@@ -44,6 +46,7 @@ public class ScreenA {
         initTrees(); // Inicializar árboles
         initObstacles(); // Inicializar obstáculos
         initCrops(); // Inicializar cultivos
+        initStones();
     }
 
 
@@ -60,6 +63,13 @@ public class ScreenA {
         obstacles.add(crop2);
     }
 
+    private void initStones() {
+        Stone stone1 = new Stone(canvas, 300, 200, 50, 50);
+        Stone stone2 = new Stone(canvas, 500, 400,50, 50);
+        obstacles.add(stone1); //
+        obstacles.add(stone2);
+    }
+
     /**
      * The function initializes enemy objects with specific positions and adds them to a list of
      * enemies.
@@ -73,6 +83,10 @@ public class ScreenA {
 
         Goat animal3 = new Goat(canvas, 120, 300);
         animals.add(animal3);
+    }
+
+    public void setNextScreen(ScreenB screen) {
+        this.nextScreen = screen;
     }
     private void initObstacles() {
 
@@ -112,9 +126,16 @@ public class ScreenA {
      * The paint() function is responsible for drawing the game elements on the screen, handling
      * collisions between the player and enemies, and checking for level completion.
      */
+    @Override
     public void paint() {
         Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite1.png"));
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
+
+        if (player.getPosition().getY() < 0) { // Detectar borde superior
+            System.out.println("Cambiando a ScreenB desde el borde superior...");
+            controller.switchToScreenB(); // Cambiar a ScreenB
+        }
+
 
         player.paint(obstacles, animals);
 
@@ -141,9 +162,9 @@ public class ScreenA {
                 ((Tree)obstacle).paint(this.canvas.getGraphicsContext2D());
             }else if(obstacle instanceof Crop){
                 ((Crop)obstacle).paint(this.canvas.getGraphicsContext2D());
+            } else if (obstacle instanceof Stone) {
+                ((Stone)obstacle).paint(this.canvas.getGraphicsContext2D());
             }
-
-
         }
     }
 
