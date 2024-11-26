@@ -20,12 +20,16 @@ public class Obstacle implements Collidable{
         this.position = new Position(x, y);
         this.requiredTool = requiredTool;
         this.healthPoints = 10;
+
+
     }
     public void updateHitBox() {
         hitBox.setX(position.getX());
         hitBox.setY(position.getY());
     }
-
+    public void setHitBox(double x, double y, int width, int higth){
+        this.hitBox = new Rectangle(x ,y, width, higth);
+    }
     public void drawHitBox(GraphicsContext gc) {
         gc.setStroke(javafx.scene.paint.Color.RED); // Color rojo para la hitbox
         gc.strokeRect(hitBox.getX(), hitBox.getY(), hitBox.getWidth(), hitBox.getHeight());

@@ -94,7 +94,7 @@ public class ScreenB {
         Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite1.png"));
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
-        player.paint();
+        player.paint(obstacles, animals);
 
         // Pintar herramientas restantes y mostrar "G" si el jugador está cerca
         for (Tool tool : tools) {

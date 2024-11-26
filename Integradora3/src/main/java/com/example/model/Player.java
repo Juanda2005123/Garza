@@ -226,8 +226,8 @@ public class Player {
      * The paint() function is responsible for rendering the player character on the screen based on
      * its current state and animation frames.
      */
-    public void paint() {
-        onMove(); // Actualiza la posición
+    public void paint(ArrayList<Obstacle> obstacles, ArrayList<Animal> animals) {
+        onMove(obstacles, animals); // Actualiza la posición
         if (alive == Alive.ALIVE) {
             // Dibuja el sprite según el estado actual
             switch (state) {
@@ -314,7 +314,7 @@ public class Player {
      * The function `onMove()` handles the movement of an object based on the keys pressed, while also
      * checking for collisions and updating the object's position accordingly.
      */
-    public void onMove() {
+    public void onMove(ArrayList<Obstacle> obstacles, ArrayList<Animal> animals) {
         System.out.println("Y: " + position.getY());
         System.out.println("X: " + position.getX());
 
@@ -341,6 +341,16 @@ public class Player {
             } else {
                 System.out.println("Colisión con el borde del mapa.");
             }
+            for(Obstacle obstacle : obstacles) {
+                if(obstacle.isCollidable()){
+                    if(!checkCollisionWithObstacle(obstacle)){
+                        position.setX(nextX);
+                        position.setY(nextY);
+                        updateHitBox();
+                    }
+                }
+
+            }
         }
     }
 
@@ -349,6 +359,10 @@ public class Player {
                 position.getX() + 51 > other.getX() &&
                 position.getY() < other.getY() + height &&
                 position.getY() + 90 > other.getY();
+    }
+
+    public boolean checkCollisionWithObstacle(Obstacle obstacle){
+        return this.hitBox.intersects(obstacle.getHitBox().getX(), obstacle.getHitBox().getY(), obstacle.getHitBox().getWidth(), obstacle.getHitBox().getHeight());
     }
 
 

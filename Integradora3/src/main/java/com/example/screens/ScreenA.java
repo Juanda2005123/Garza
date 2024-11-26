@@ -57,9 +57,12 @@ public class ScreenA {
 
     }
     private void initObstacles() {
-        obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
-        obstacles.add(new Obstacle(canvas, ToolType.HAMMER, 600, 300));
-        obstacles.add(new Obstacle(canvas, ToolType.SWORD, 200, 500));
+
+        //obstacles.add(new Obstacle(canvas, ToolType.AXE, 400, 400));
+        //obstacles.add(new Obstacle(canvas, ToolType.HAMMER, 600, 300));
+        //obstacles.add(new Obstacle(canvas, ToolType.SWORD, 200, 500));
+
+
     }
     private void updateInterfaceWithTool(ToolType toolType) {
         switch (toolType) {
@@ -95,7 +98,7 @@ public class ScreenA {
         Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite1.png"));
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
-        player.paint();
+        player.paint(obstacles, animals);
 
         // Pintar herramientas restantes y mostrar "G" si el jugador está cerca
         for (Tool tool : tools) {

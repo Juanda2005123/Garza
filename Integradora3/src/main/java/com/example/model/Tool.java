@@ -3,10 +3,11 @@ package com.example.model;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class Tool {
+public class Tool implements Collidable{
     private final String PATH = "/com/example/img/objects/tools";
     private Canvas canvas;
     private GraphicsContext graphicsContext;
@@ -26,6 +27,10 @@ public class Tool {
         this.minimunDamage = 1;
         this.fullDamage = 4;
         initImages();
+    }
+
+    public Tool() {
+        super();
     }
 
     private void initImages(){
@@ -81,4 +86,14 @@ public class Tool {
     public void setFullDamage(int fullDamage){this.fullDamage = fullDamage;}
     public int getMinimunDamage(){return this.minimunDamage;}
     public void setMinimunDamage(int minimunDamage){this.minimunDamage = minimunDamage;}
+
+    @Override
+    public Rectangle getHitBox() {
+        return null;
+    }
+
+    @Override
+    public boolean isCollidable() {
+        return false;
+    }
 }
