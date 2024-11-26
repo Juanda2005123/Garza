@@ -38,14 +38,16 @@ public class ScreenC implements Screen {
         this.controller = Controller.getInstance();  // Obtener la instancia del controlador
         this.trees = new ArrayList<>();
         this.obstacles = new ArrayList<Obstacle>();
+        this.stones = new ArrayList<>();
         animals = new ArrayList<>();
         tools = new ArrayList<>();
         player.setPosition(167, 210);
         //initEnemies();
         initTools();
-
+        initStones();
         initTrees(); // Inicializar árboles
         initCrops(); // Inicializar cultivos
+        initEnemies();
     }
 
 
@@ -62,22 +64,27 @@ public class ScreenC implements Screen {
         obstacles.add(crop1); //
         obstacles.add(crop2);
     }
+    private void initEnemies(){
+        animals.clear();
+        Position position1 = new Position(400,300);
+        Position position2 = new Position(600, 200);
+        Position position3 = new Position(700, 150);
+        Position position4 = new Position(1000, 1000);
+        Position position5 = new Position(800, 200);
+        Position position6 = new Position(850, 1100);
+        Position position7 = new Position(800, 750);
+        Position position8 = new Position(850, 1050);
+        Position position9 = new Position(300, 200);
+        Position position10 = new Position(1050, 450);
 
-    /**
-     * The function initializes enemy objects with specific positions and adds them to a list of
-     * enemies.
-     */
-    /**private void initEnemies() {
-        Sheep animal = new Sheep(canvas, 550, 510);
-        animals.add(animal);
+        animals.add(new Sheep(canvas, 400, 250, position1, position2, true)); // Separado de otros elementos
+        animals.add(new Cow(canvas, 1000, 350, position3,position4, false));  // Más cerca del borde superior derecho
+        animals.add(new Goat(canvas, 800, 400,position5,position6, false)); // Más hacia la parte inferior izquierda
+        animals.add(new Sheep(canvas, 500, 800,position7,position8, true)); // Cerca del centro, pero sin superposición
+        animals.add(new Cow(canvas, 300, 900, position9,position10, true)); // Zona superior izquierda
 
-        Cow animal2 = new Cow(canvas, 500, 210);
-        animals.add(animal2);
-
-        Goat animal3 = new Goat(canvas, 120, 300);
-        animals.add(animal3);
     }
-    */
+
     public void setNextScreen(ScreenB screen) {
         this.nextScreen = screen;
     }
@@ -117,6 +124,8 @@ public class ScreenC implements Screen {
         //}
 
     }
+
+
     private void updateInterfaceWithToolDeleted(ToolType toolType) {
         switch (toolType) {
             case AXE -> {
