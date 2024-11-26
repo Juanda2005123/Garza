@@ -484,21 +484,22 @@ public class Player {
     }
 
     public Alive reduceDurabilityCurrentTool(ToolType toolType){
-        for(int i = 0; i < inventory.length; i++){
-            if(inventory[i] != null){
-                if(inventory[i].getToolType() ==  toolType){
-                    System.out.println("------------------------------------------------------\nSi, tipo de arma: " + inventory[i].getDurability() +"\n------------------------------------------------------");
-                    if(inventory[i].reduceDurability() == Alive.DEAD){
-                        toolsCollected[i] = false;
-                        System.out.println("------------------------------------------------------\nNo, tipo de arma: " + inventory[i].getDurability() +"\n------------------------------------------------------");
-                    }
-
-                    return inventory[i].getAlive();
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null && inventory[i].getToolType() == toolType) {
+                System.out.println("Reduciendo durabilidad de: " + toolType + " Durabilidad actual: " + inventory[i].getDurability());
+                Alive state = inventory[i].reduceDurability();
+                if (state == Alive.DEAD) {
+                    toolsCollected[i] = false;
+                    inventory[i] = null; // Elimina la herramienta del inventario
+                    System.out.println(toolType + " destruido.");
                 }
+                return state;
             }
         }
+        System.out.println("Herramienta no encontrada: " + toolType);
         return Alive.ALIVE;
     }
+
 
     public void setCurrentTool(ToolType toolType){
         this.currentTool = toolType;
@@ -507,4 +508,7 @@ public class Player {
         }
     }
 
+    public Tool[] getInventory() {
+        return inventory;
+    }
 }

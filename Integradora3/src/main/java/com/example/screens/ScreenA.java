@@ -223,10 +223,20 @@ public class ScreenA implements Screen{
                         controller.updatePoints(10); // Incrementar puntos
                         // Marcar herramienta como recogida
                         switch (tool.getToolType()) {
-                            case AXE -> player.toolsCollected[0] = true;
-                            case HAMMER -> player.toolsCollected[1] = true;
-                            case SWORD -> player.toolsCollected[2] = true;
+                            case AXE -> {
+                                player.toolsCollected[0] = true;
+                                player.getInventory()[0] = tool;
+                            }
+                            case HAMMER -> {
+                                player.toolsCollected[1] = true;
+                                player.getInventory()[1] = tool;
+                            }
+                            case SWORD -> {
+                                player.toolsCollected[2] = true;
+                                player.getInventory()[2] = tool;
+                            }
                         }
+
                         break;
                     }
                 }
@@ -309,6 +319,9 @@ public class ScreenA implements Screen{
         this.player.onKeyRelease(event);
     }
     public boolean damage(Player player, Obstacle obstacle){
+        Alive temporalState;
+        ToolType tempCurrentTool = player.getCurrentTool();
+
         if(player.getCurrentTool() == obstacle.getRequiredTool()){
             if(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 obstacle.setHP(obstacle.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
@@ -316,7 +329,7 @@ public class ScreenA implements Screen{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
         }else{
             if(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()) > 0){
                 obstacle.setHP(obstacle.getHP() - player.findCurrentToolMinDamage(player.getCurrentTool()));
@@ -324,13 +337,20 @@ public class ScreenA implements Screen{
                 obstacle.setHP(0);
                 obstacle.setState(Alive.DEAD);
             }
-            player.reduceDurabilityCurrentTool(player.getCurrentTool());
+
+            temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
+        }
+        if(temporalState == Alive.DEAD){
+            updateInterfaceWithToolDeleted(tempCurrentTool);
+            player.setCurrentTool(ToolType.NA);
+            System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (obstacle.getState() == Alive.ALIVE);
     }
 
     public boolean damage(Player player, Animal animal){
         Alive temporalState;
+        ToolType tempCurrentTool = player.getCurrentTool();
         if(player.getCurrentTool() == ToolType.SWORD){
             if(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()) > 0){
                 animal.setHP(animal.getHP() - player.findCurrentToolFullDamage(player.getCurrentTool()));
@@ -351,8 +371,9 @@ public class ScreenA implements Screen{
             temporalState = player.reduceDurabilityCurrentTool(player.getCurrentTool());
         }
         if(temporalState == Alive.DEAD){
-            updateInterfaceWithToolDeleted(player.getCurrentTool());
+            updateInterfaceWithToolDeleted(tempCurrentTool);
             player.setCurrentTool(ToolType.NA);
+            System.out.println("La herramienta " + tempCurrentTool + " se rompió.");
         }
         return (animal.getAlive() == Alive.ALIVE);
     }
