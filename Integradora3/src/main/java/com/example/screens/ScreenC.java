@@ -140,7 +140,7 @@ public class ScreenC implements Screen {
      */
     @Override
     public void paint() {
-        Image image = new Image(getClass().getResourceAsStream(PATH + "/Stage3.png"));
+        Image image = new Image(getClass().getResourceAsStream(PATH + "/MountainSprite3.png"));
         graphicsContext.drawImage(image, 0, 0, 1230, 1002);
 
         if (player.getPosition().getY() < 0) { // Detectar borde superior

@@ -96,18 +96,24 @@ public class ScreenB implements Screen {
         obstacles.addAll(stones);
     }
 
-
-
     private void initEnemies(){
         animals.clear();
+        Position position1 = new Position(400,300);
+        Position position2 = new Position(600, 200);
+        Position position3 = new Position(700, 150);
+        Position position4 = new Position(1000, 1000);
+        Position position5 = new Position(800, 200);
+        Position position6 = new Position(850, 1100);
+        Position position7 = new Position(800, 750);
+        Position position8 = new Position(850, 1050);
+        Position position9 = new Position(300, 200);
+        Position position10 = new Position(1050, 450);
 
-        // Colocar animales en posiciones más separadas y equilibradas
-        //animals.add(new Sheep(canvas, 400, 450)); // Separado de otros elementos
-        //animals.add(new Cow(canvas, 650, 350));  // Más cerca del borde superior derecho
-        //animals.add(new Goat(canvas, 200, 500)); // Más hacia la parte inferior izquierda
-        //animals.add(new Sheep(canvas, 500, 150)); // Cerca del centro, pero sin superposición
-        //animals.add(new Cow(canvas, 300, 200)); // Zona superior izquierda
-        //animals.add(new Goat(canvas, 600, 500)); // Inferior derecha, alejado del resto
+        animals.add(new Sheep(canvas, 400, 250, position1, position2, true)); // Separado de otros elementos
+        animals.add(new Cow(canvas, 1000, 350, position3,position4, false));  // Más cerca del borde superior derecho
+        animals.add(new Goat(canvas, 800, 400,position5,position6, false)); // Más hacia la parte inferior izquierda
+        animals.add(new Sheep(canvas, 500, 800,position7,position8, true)); // Cerca del centro, pero sin superposición
+        animals.add(new Cow(canvas, 300, 900, position9,position10, true)); // Zona superior izquierda
 
     }
     private void initObstacles() {
