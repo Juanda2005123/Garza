@@ -25,7 +25,6 @@ public class ScreenA implements Screen {
     private ArrayList<Tree> trees; // Lista de árboles
     private ArrayList<Stone> stones; // Lista de árboles
 
-
     private ScreenB nextScreen;
 
     public Player getPlayer() {
@@ -97,10 +96,16 @@ public class ScreenA implements Screen {
 
 
     private void initAnimals() {
+        Position position1 = new Position(100,300);
+        Position position2 = new Position(600, 200);
+        Position position3 = new Position(700, 150);
+        Position position4 = new Position(1000, 100);
+        Position position5 = new Position(800, 200);
+        Position position6 = new Position(850, 450);
         // Animales ubicados de manera dispersa y lejos de cultivos
-        animals.add(new Sheep(canvas, 100, 300));   // Esquina izquierda superior
-        animals.add(new Cow(canvas, 750, 350));    // Zona derecha
-        animals.add(new Goat(canvas, 400, 200));   // Centro del mapa
+        animals.add(new Sheep(canvas, 100, 900, position1, position2, true));   // Esquina izquierda superior
+        animals.add(new Cow(canvas, 750, 150, position3, position4, true));    // Zona derecha
+        animals.add(new Goat(canvas, 800, 200, position5, position6, false));   // Centro del mapa
     }
 
 
@@ -135,11 +140,15 @@ public class ScreenA implements Screen {
     }
 
     private void initTools() {
+
         tools.clear();
         // Solo mostrar el hacha en esta pantalla
-        Tool axe = new Tool(canvas, ToolType.AXE, 800, 100); // Parte superior derecha
+        //if(player.toolsCollected[0]){
+            Tool axe = new Tool(canvas, ToolType.AXE, 650, 80); // Parte superior derecha
 
-        tools.add(axe);
+            tools.add(axe);
+        //}
+
 
     }
 
@@ -240,6 +249,7 @@ public class ScreenA implements Screen {
                         tools.remove(i); // Eliminar herramienta del mapa
                         updateInterfaceWithTool(tool.getToolType()); // Actualizar interfaz
                         controller.updatePoints(10); // Incrementar puntos
+
                         // Marcar herramienta como recogida
                         switch (tool.getToolType()) {
                             case AXE -> {
@@ -256,61 +266,76 @@ public class ScreenA implements Screen {
                             }
                         }
 
+                        // Completar logro "Primer Arma"
+                        Achievement achievement = controller.getAchievement("Primer Arma");
+                        if (achievement != null && !achievement.isCompleted()) {
+                            achievement.complete();
+                            controller.getGameScreenController().showToolMessage("¡Logro desbloqueado: " + achievement.getName() + "!");
+                        }
+
                         break;
                     }
                 }
             }
             case "H" -> {
-                //Interacción con Animales
-                for(Animal animal : animals){
-                    if (player.getInteractionArea().intersects(animal.getHitBox().getX(), animal.getHitBox().getY(), animal.getHitBox().getWidth(), animal.getHitBox().getHeight())){
-                        if(damage(player, animal)){
+                // Interacción con animales
+                for (Animal animal : animals) {
+                    if (player.getInteractionArea().intersects(animal.getHitBox().getBoundsInLocal())) {
+                        if (damage(player, animal)) {
                             controller.updatePoints(5);
-                        }else{
+                        } else {
                             animals.remove(animal);
                             controller.updatePoints(10);
-                        }
-                    }
-                }
-                // Interacción con árboles
-                // Interacción con cultivos
-                for (Obstacle obstacle : obstacles) {
-                    if(obstacle instanceof Tree tree){
-                        if (player.getInteractionArea().intersects(tree.getHitBox().getX(), tree.getHitBox().getY(), tree.getHitBox().getWidth(), tree.getHitBox().getHeight())){
-                            if(damage(player, tree)){
-                                controller.updatePoints(5);
-                            }else{
-                                obstacles.remove(tree);
-                                controller.updatePoints(10);
+
+                            // Completar logro "Primer Animal"
+                            Achievement achievement = controller.getAchievement("Primer Animal");
+                            if (achievement != null && !achievement.isCompleted()) {
+                                achievement.complete();
+                                controller.getGameScreenController().showToolMessage("¡Logro desbloqueado: " + achievement.getName() + "!");
                             }
                         }
-                    }else if(obstacle instanceof Crop crop) {
+                        break;
+                    }
+                }
 
-                    //Si el jugador puede plantar
+                // Interacción con obstáculos
+                for (Obstacle obstacle : obstacles) {
+                    if (player.getInteractionArea().intersects(obstacle.getHitBox().getBoundsInLocal())) {
+                        if (obstacle instanceof Tree tree) {
+                            if (damage(player, tree)) {
+                                controller.updatePoints(5);
+                            } else {
+                                obstacles.remove(tree);
+                                controller.updatePoints(10);
 
-                        if (player.getInteractionArea().intersects(
-                                crop.getHitBox().getX(), crop.getHitBox().getY(),
-                                crop.getHitBox().getWidth(), crop.getHitBox().getHeight())) {
+                                // Completar logro "Primer Obstáculo"
+                                Achievement achievement = controller.getAchievement("Primer Obstáculo");
+                                if (achievement != null && !achievement.isCompleted()) {
+                                    achievement.complete();
+                                    controller.getGameScreenController().showToolMessage("¡Logro desbloqueado: " + achievement.getName() + "!");
+                                }
+                            }
+                        } else if (obstacle instanceof Crop crop) {
+                            // Interacción con cultivos
                             if (crop.getCropState() == CropState.EMPTY) {
-                                crop.plant(); // Planta algo en el cultivo
+                                crop.plant(); // Plantar cultivo
                                 controller.updatePoints(5);
                             } else if (crop.getCropState() == CropState.GROWN) {
-                                crop.harvest(); // Cosecha
+                                crop.harvest(); // Cosechar
                                 controller.updatePoints(10);
-                            } else {
-                                System.out.println("Este cultivo ya está ocupado.");
                             }
                             break;
                         }
-                    }else if(obstacle instanceof Stone stone){
+                    } else if(obstacle instanceof Stone stone){
                         if (player.getInteractionArea().intersects(stone.getHitBox().getX(), stone.getHitBox().getY(), stone.getHitBox().getWidth(), stone.getHitBox().getHeight())){
                             if(damage(player, stone)){
                                 controller.updatePoints(5);
-                            }else{
+                            } else {
                                 obstacles.remove(stone);
                                 controller.updatePoints(10);
                             }
                         }
+                        break;
                     }
                 }
             }
@@ -332,6 +357,7 @@ public class ScreenA implements Screen {
             default -> System.out.println("Tecla no asignada: " + event.getCode());
         }
     }
+
 
 
     /**

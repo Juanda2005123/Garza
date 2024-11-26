@@ -34,7 +34,6 @@ public class Player {
     private int frame;
     private int animation;
     private int countAnimation;
-
     private Alive alive;
     //espaciales
     private Position position;
@@ -98,9 +97,13 @@ public class Player {
         logsInventory = new ArrayList<>();
         stonesInventory = new ArrayList<>();
         initImages();
+        toolsCollected[0] = false;
+        toolsCollected[1] = false;
+        toolsCollected[2] = false;
     }
 
 
+    
     public void updateInteractionArea() {
         interactionArea.setCenterX(position.getX() + hitBox.getWidth() / 2);
         interactionArea.setCenterY(position.getY() + hitBox.getHeight() / 2);
@@ -371,12 +374,25 @@ public class Player {
                 }
             } else {
                 // Colisión con el borde del mapa
+                Stage stage = Controller.getInstance().getStage();
                 if (nextY < 0) { // Detectar borde superior
-                    System.out.println("Jugador en el borde superior. Cambiando a ScreenB...");
-                    Controller.getInstance().switchToScreenB(); // Cambiar a ScreenB
+                    if(stage==Stage.FIRSTSTAGE){
+                        System.out.println("Jugador en el borde superior. Cambiando a ScreenB...");
+                        Controller.getInstance().switchToScreenB(); // Cambiar a ScreenB
+                    } else if (stage==Stage.SECONDSTAGE){
+                        System.out.println("Jugador en el borde superior. Cambiando a ScreenC...");
+                        Controller.getInstance().switchToScreenC(); // Cambiar a ScreenC
+                    }
+
                 } else if (nextY + hitBox.getHeight() > canvas.getHeight()) { // Detectar borde inferior
-                    System.out.println("Jugador en el borde inferior. Cambiando a ScreenA...");
-                    Controller.getInstance().switchToScreenA(); // Cambiar a ScreenA
+                    if(stage==Stage.SECONDSTAGE){
+                        System.out.println("Jugador en el borde inferior. Cambiando a ScreenA...");
+                        Controller.getInstance().switchToScreenA(); // Cambiar a ScreenA
+                    } else if (stage==Stage.THIRDSTAGE){
+                        System.out.println("Jugador en el borde inferior. Cambiando a ScreenB...");
+                        Controller.getInstance().switchToScreenB(); // Cambiar a ScreenB
+                    }
+
                 } else {
                     System.out.println("Colisión con el borde del mapa.");
                 }
@@ -489,7 +505,7 @@ public class Player {
         return 1;
     }
 
-    public Alive reduceDurabilityCurrentTool(ToolType toolType){
+    public Alive reduceDurabilityCurrentTool(ToolType toolType) {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] != null && inventory[i].getToolType() == toolType) {
                 System.out.println("Reduciendo durabilidad de: " + toolType + " Durabilidad actual: " + inventory[i].getDurability());

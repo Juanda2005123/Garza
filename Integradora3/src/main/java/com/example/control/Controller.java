@@ -1,11 +1,15 @@
 package com.example.control;
 
 
+import com.example.model.Achievement;
+import com.example.model.AchievementTree;
 import com.example.model.Stage;
 import com.example.screens.Screen;
 import com.example.screens.ScreenA;
 import com.example.screens.ScreenB;
 import javafx.application.Platform;
+import com.example.model.Stage;
+
 
 public class Controller {
 
@@ -13,6 +17,8 @@ public class Controller {
     private int enemies;
     private int points;
     private int stopGame;
+    private AchievementTree achievements; // Árbol de logros
+
 
     private Screen currentScreen;
     private Stage stage; // Variable para almacenar el estado actual del escenario
@@ -60,6 +66,8 @@ public class Controller {
     // The `private Controller()` is a private constructor for the `Controller` class. It is called
     // when an instance of the `Controller` class is created.
     private Controller(){
+        achievements = new AchievementTree();
+        initializeAchievements(); // Inicializar los logros
         stopGame = 0;
         enemies = 0;
         points = 0;
@@ -90,6 +98,7 @@ public class Controller {
     public void updateSword(){
         gameScreenController.updateSword();
     }
+
 
     public void deleteAxe(){gameScreenController.deleteAxe();
     }
@@ -131,22 +140,44 @@ public class Controller {
     }
 
     public void switchToScreenB() {
-        Stage stage = Stage.SECONDSTAGE;
+        stage = Stage.SECONDSTAGE;
         gameScreenController.screenBStart();
     }
 
     public void switchToScreenA() {
-        Stage stage = Stage.FIRSTSTAGE;
+        stage = Stage.FIRSTSTAGE;
         gameScreenController.screenAStart();
     }
 
     public void switchToScreenC() {
-        Stage stage = Stage.FIRSTSTAGE;
-        gameScreenController.screenAStart();
+        stage = Stage.THIRDSTAGE;
+        gameScreenController.screenCStart();
     }
 
     public Stage getStage() {
         return this.stage;
     }
 
+
+    // Inicializar los logros
+    private void initializeAchievements() {
+        achievements.add(new Achievement("Primer Animal", "Mata tu primer animal."));
+        achievements.add(new Achievement("Primer Obstáculo", "Rompe tu primer obstáculo."));
+        achievements.add(new Achievement("Primer Arma", "Recoge tu primera arma."));
+    }
+
+    // Método para buscar logros
+    public Achievement getAchievement(String name) {
+        return achievements.find(name);
+    }
+
+    // Método para imprimir logros (opcional para debug)
+    public void printAchievements() {
+        achievements.printAchievements();
+    }
+
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
 }

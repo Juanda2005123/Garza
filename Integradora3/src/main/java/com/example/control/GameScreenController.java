@@ -24,6 +24,10 @@ public class GameScreenController implements Initializable {
     @FXML
     private Label points;
     @FXML
+    private Label stone;
+    @FXML
+    private Label wood;
+    @FXML
     private VBox vBox;
 
     @FXML
@@ -117,6 +121,13 @@ public class GameScreenController implements Initializable {
         this.points.setText(points+"");
     }
 
+    public void updateWood(int wood) {
+        this.wood.setText(wood+"");
+    }
+    public void updateStone(int stone) {
+        this.stone.setText(wood+"");
+    }
+
 
 
    /**
@@ -134,12 +145,12 @@ public class GameScreenController implements Initializable {
                     if(screenB!=null)
                         screenB.onKeyPressed(keyEvent);
                 }
-                /**
+
                 case THIRDSTAGE -> {
                     if(screenC!=null)
                         screenC.onKeyPressed(keyEvent);
                 }
-                 */
+
             }
         });
 
@@ -154,12 +165,12 @@ public class GameScreenController implements Initializable {
                     if(screenB!=null)
                         screenB.onKeyRelease(keyEvent);
                 }
-                /**
+
                 case THIRDSTAGE -> {
                     if(screenC!=null)
                         screenC.onKeyRelease(keyEvent);
                 }
-                 */
+
             }
         });
 
@@ -167,7 +178,8 @@ public class GameScreenController implements Initializable {
     public void screenAStart() {
         screenA = new ScreenA(this.canvas, player); // Crear la pantalla A
         stage = Stage.FIRSTSTAGE; // Establecer el escenario como FIRSTSTAGE
-
+        controller.setStage(stage);
+        screenB = null;
         // Ciclo para pintar ScreenA mientras el stage sea FIRSTSTAGE
         new Thread(() -> {
             while (stage == Stage.FIRSTSTAGE) {
@@ -177,7 +189,7 @@ public class GameScreenController implements Initializable {
 
                         // Verificar si el jugador está en el borde para cambiar de pantalla
                         if (screenA.getPlayer().getPosition().getX() > canvas.getWidth()) {
-                            switchToScreenB(); // Cambiar a ScreenB si el jugador llega al borde derecho
+                            screenBStart(); // Cambiar a ScreenB si el jugador llega al borde derecho
                         }
                     }
                 });
@@ -191,16 +203,13 @@ public class GameScreenController implements Initializable {
         }).start();
     }
 
-    // Método para cambiar a ScreenB
-    private void switchToScreenB() {
-        stage = Stage.SECONDSTAGE; // Cambiar el estado
-        screenBStart(); // Iniciar la siguiente pantalla
-    }
+
 
     public void screenBStart() {
         screenB = new ScreenB(this.canvas, player); // Crear la pantalla B
         stage = Stage.SECONDSTAGE; // Establecer el escenario como SECONDSTAGE
-
+        screenA = null;
+        screenC = null;
         // Ciclo para pintar ScreenB mientras el stage sea SECONDSTAGE
         new Thread(() -> {
             while (stage == Stage.SECONDSTAGE) {
@@ -210,7 +219,10 @@ public class GameScreenController implements Initializable {
 
                         // Verificar si el jugador está en el borde para regresar a ScreenA
                         if (screenB.getPlayer().getPosition().getX() < 0) {
-                            switchToScreenA(); // Cambiar a ScreenA si el jugador regresa al borde izquierdo
+                            screenAStart(); // Cambiar a ScreenA si el jugador regresa al borde izquierdo
+                        }
+                        if (screenB.getPlayer().getPosition().getX() > canvas.getWidth()) {
+                            screenCStart(); // Cambiar a ScreenB si el jugador llega al borde derecho
                         }
                     }
                 });
@@ -224,24 +236,21 @@ public class GameScreenController implements Initializable {
         }).start();
     }
 
-    // Método para cambiar de vuelta a ScreenA
-    private void switchToScreenA() {
-        stage = Stage.FIRSTSTAGE; // Cambiar el estado
-        screenAStart(); // Reiniciar la pantalla A
-    }
-
-    public void switchToScreenC() {
-        stage = Stage.THIRDSTAGE; // Actualiza el escenario
-        screenCStart(); // Inicia la pantalla C
-    }
-
-    private void screenCStart() {
+    public void screenCStart() {
         screenC = new ScreenC(this.canvas); // Crea la nueva pantalla
+        stage = Stage.THIRDSTAGE;
+        screenB = null;
         new Thread(() -> {
             while (stage == Stage.THIRDSTAGE) {
                 Platform.runLater(() -> {
-                    if (screenC != null)
+                    if (screenC != null) {
                         screenC.paint();
+
+                        if (screenC.getPlayer().getPosition().getX() < 0) {
+                            screenBStart(); // Cambiar a ScreenA si el jugador regresa al borde izquierdo
+                        }
+                    }
+
                 });
 
                 try {
@@ -306,7 +315,7 @@ public class GameScreenController implements Initializable {
     }
 
 
-
-    
-
+    public Stage getStage() {
+        return stage;
+    }
 }
