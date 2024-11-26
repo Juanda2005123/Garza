@@ -43,6 +43,7 @@ public class ScreenA {
 
         initTrees(); // Inicializar árboles
         initObstacles(); // Inicializar obstáculos
+        initCrops(); // Inicializar cultivos
     }
 
 
@@ -52,6 +53,13 @@ public class ScreenA {
         trees.add(new Tree(canvas,700, 200, 50, 70));
         obstacles.addAll(trees);
     }
+    private void initCrops() {
+        Crop crop1 = new Crop(canvas, 200, 300);
+        Crop crop2 = new Crop(canvas, 400, 500);
+        obstacles.add(crop1); //
+        obstacles.add(crop2);
+    }
+
     /**
      * The function initializes enemy objects with specific positions and adds them to a list of
      * enemies.
@@ -131,7 +139,10 @@ public class ScreenA {
         for (Obstacle obstacle : obstacles) {
             if (obstacle instanceof Tree){
                 ((Tree)obstacle).paint(this.canvas.getGraphicsContext2D());
+            }else if(obstacle instanceof Crop){
+                ((Crop)obstacle).paint(this.canvas.getGraphicsContext2D());
             }
+
 
         }
     }
@@ -209,11 +220,26 @@ public class ScreenA {
                         }
                     }
                 }
+                // Interacción con cultivos
+                for (Obstacle obstacle : obstacles) {
+                    if (obstacle instanceof Crop crop) {
+                        if (player.getInteractionArea().intersects(
+                                crop.getHitBox().getX(), crop.getHitBox().getY(),
+                                crop.getHitBox().getWidth(), crop.getHitBox().getHeight())) {
+                            if (crop.getCropState() == CropState.EMPTY) {
+                                crop.plant(); // Planta algo en el cultivo
+                                controller.updatePoints(5);
+                            } else if (crop.getCropState() == CropState.GROWN) {
+                                crop.harvest(); // Cosecha
+                                controller.updatePoints(10);
+                            } else {
+                                System.out.println("Este cultivo ya está ocupado.");
+                            }
+                            break;
+                        }
+                    }
+                }
             }
-
-
-
-
             case "DIGIT1" -> { // Seleccionar hacha
                 player.equipTool(0);
                 controller.getGameScreenController().highlightTool(ToolType.AXE, player.getToolsCollected());

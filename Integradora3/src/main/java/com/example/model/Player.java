@@ -46,6 +46,9 @@ public class Player {
     private Tool[] inventory;
     public boolean[] toolsCollected; // Registro de herramientas recogidas
     private Rectangle hitBox;
+    private Circle interactionArea; // Área de interacción
+    private double interactionRadius = 70; // Radio del área de interacción
+
     /**
      * The function sets the position of an object.
      *
@@ -76,6 +79,7 @@ public class Player {
         animationSwordRight = new ArrayList<>();
         position = new Position( 0, 0);
         hitBox = new Rectangle(position.getX(), position.getY(), 51, 90);
+        this.interactionArea = new Circle(position.getX() + 25, position.getY() + 45, interactionRadius); // Centro + radio
         speed = 12;
         keyPressed = new boolean[5];
         for (int i = 0; i < 5; i++) {
@@ -90,6 +94,10 @@ public class Player {
         }
         System.out.println("antes imagenes");
         initImages();
+    }
+    public void updateInteractionArea() {
+        interactionArea.setCenterX(position.getX() + hitBox.getWidth() / 2);
+        interactionArea.setCenterY(position.getY() + hitBox.getHeight() / 2);
     }
 
     /**
@@ -243,9 +251,10 @@ public class Player {
 
             // Actualiza la hitbox después de dibujar el sprite
             updateHitBox();
-
+            updateInteractionArea();
             // Opcional: Dibuja la hitbox para depuración. Comentar antes de jugar.
             drawHitBox(graphicsContext);
+            drawInteractionArea(graphicsContext);
 
             frame++;
             if (frame > 5000) frame = 0;
@@ -256,7 +265,9 @@ public class Player {
 
 
 
-
+    public Circle getInteractionArea(){
+        return this.interactionArea;
+    }
 
     /**
      * The function handles key press events and updates the state and key pressed array accordingly.
@@ -351,6 +362,7 @@ public class Player {
                     position.setX(nextX);
                     position.setY(nextY);
                     updateHitBox();
+                    updateInteractionArea();
                 } else {
                     System.out.println("Colisión con un obstáculo.");
                 }
@@ -366,6 +378,14 @@ public class Player {
         return futureHitBox.intersects(obstacle.getHitBox().getBoundsInLocal());
     }
 
+    public void drawInteractionArea(GraphicsContext gc) {
+        gc.setStroke(javafx.scene.paint.Color.BLUE); // Color azul para el área de interacción
+        gc.strokeOval(
+                interactionArea.getCenterX() - interactionArea.getRadius(),
+                interactionArea.getCenterY() - interactionArea.getRadius(),
+                interactionArea.getRadius() * 2, interactionArea.getRadius() * 2
+        );
+    }
 
     public boolean checkCollision(Position other, double width, double height) {
         return position.getX() < other.getX() + width &&
