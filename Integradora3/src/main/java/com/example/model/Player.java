@@ -402,12 +402,15 @@ public class Player {
     }
 
     public void equipTool(int toolIndex) {
+        // Verificar que el índice sea válido
         if (toolIndex < 0 || toolIndex >= toolsCollected.length) {
             System.out.println("Índice de herramienta no válido.");
             return;
         }
 
+        // Verificar si la herramienta ha sido recogida
         if (toolsCollected[toolIndex]) {
+            // Equipar la herramienta según el índice
             switch (toolIndex) {
                 case 0 -> currentTool = ToolType.AXE;
                 case 1 -> currentTool = ToolType.HAMMER;
@@ -415,12 +418,21 @@ public class Player {
             }
             System.out.println("Herramienta equipada: " + currentTool);
         } else {
+            // Mensaje de error si la herramienta no ha sido recogida
             System.out.println("No has recogido esta herramienta aún.");
         }
     }
 
+
+
     public ToolType getCurrentTool() {
-        return currentTool; // Devuelve la herramienta equipada actualmente
+        System.out.println("Herramienta equipada: " + currentTool); // Debugging
+        return currentTool;
     }
+
+    public boolean[] getToolsCollected() {
+        return toolsCollected; // Devuelve el estado de las herramientas recogidas
+    }
+
 
 }

@@ -38,4 +38,8 @@
       <VBox alignment="CENTER" prefHeight="498.0" prefWidth="498.0" spacing="20.0" />
    </VBox>
    <Canvas fx:id="canvas" focusTraversable="true" height="1002.0" width="1230.0" />
+   <Label fx:id="toolMessage" layoutX="10" layoutY="10"
+          text="" style="-fx-font-size: 16px; -fx-text-fill: white; -fx-background-color: black;
+       -fx-padding: 5; -fx-border-radius: 5; -fx-background-radius: 5;"
+          visible="false" />
 </HBox>

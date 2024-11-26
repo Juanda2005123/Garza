@@ -42,6 +42,9 @@ public class GameScreenController implements Initializable {
     private Controller controller;
     private Stage stage;
 
+    @FXML
+    private Label toolMessage;
+
 
     /**
      * The initialize function sets up the game screen controller and initializes the graphics context
@@ -64,6 +67,12 @@ public class GameScreenController implements Initializable {
         listeners();
 
         screenAStart();
+
+        if (toolMessage == null) {
+            System.out.println("toolMessage no está inicializado correctamente.");
+        } else {
+            System.out.println("toolMessage está listo.");
+        }
 
         axe.setImage(new Image(getClass().getResourceAsStream(PATH+"/objects/tools/blackaxe.png")));
         hammer.setImage(new Image(getClass().getResourceAsStream(PATH+"/objects/tools/blackhammer.png")));
@@ -160,17 +169,56 @@ public class GameScreenController implements Initializable {
         
     }
 
-    public void highlightTool(ToolType toolType) {
-        axe.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 0;");
-        hammer.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 0;");
-        sword.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 0;");
+    public void highlightTool(ToolType toolType, boolean[] toolsCollected) {
+        // Reinicia los estilos de todas las herramientas
+        axe.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+        hammer.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+        sword.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
 
+        // Aplica el estilo solo si el arma ha sido recogida
         switch (toolType) {
-            case AXE -> axe.setStyle("-fx-background-color: yellow; -fx-border-color: yellow; -fx-border-width: 3;");
-            case HAMMER -> hammer.setStyle("-fx-background-color: yellow; -fx-border-color: yellow; -fx-border-width: 3;");
-            case SWORD -> sword.setStyle("-fx-background-color: yellow; -fx-border-color: yellow; -fx-border-width: 3;");
+            case AXE -> {
+                if (toolsCollected[0]) {
+                    axe.setStyle("-fx-border-color: yellow; -fx-border-width: 80;");
+                }
+            }
+            case HAMMER -> {
+                if (toolsCollected[1]) {
+                    hammer.setStyle("-fx-border-color: yellow; -fx-border-width: 80;");
+                }
+            }
+            case SWORD -> {
+                if (toolsCollected[2]) {
+                    sword.setStyle("-fx-border-color: yellow; -fx-border-width: 80;");
+                }
+            }
+            default -> System.out.println("No se puede resaltar un arma no válida.");
         }
     }
+
+    public void showToolMessage(String message) {
+        if (toolMessage != null) {
+            toolMessage.setText(message);
+            toolMessage.setVisible(true);
+            System.out.println("Mostrando mensaje: " + message);
+
+            // Oculta el mensaje después de 3 segundos
+            new Thread(() -> {
+                try {
+                    Thread.sleep(3000); // Esperar 3 segundos
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> {
+                    toolMessage.setVisible(false);
+                    System.out.println("Mensaje oculto.");
+                });
+            }).start();
+        } else {
+            System.out.println("toolMessage es null.");
+        }
+    }
+
 
 
     

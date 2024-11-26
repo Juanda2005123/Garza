@@ -182,33 +182,52 @@ public class ScreenA {
                 }
             }
             case "H" -> { // Interacción con árboles
+                System.out.println("Intentando talar un árbol..."); // Debugging
                 for (int i = 0; i < trees.size(); i++) {
                     Tree tree = trees.get(i);
+
+                    // Verificar si el jugador está cerca del árbol
                     if (tree.getHitBox().intersects(player.getPosition().getX(), player.getPosition().getY(), 51, 90)) {
-                        if (player.getCurrentTool() == ToolType.AXE) { // Verificar si tiene el hacha
-                            System.out.println("Árbol talado con el hacha.");
-                            trees.remove(i); // Eliminar árbol del mapa
-                            controller.updatePoints(15); // Incrementar puntos
+                        System.out.println("Jugador está cerca de un árbol."); // Debugging
+
+                        // Verificar si tiene el hacha equipada
+                        if (player.getCurrentTool() == ToolType.AXE) {
+                            System.out.println("Árbol talado con el hacha."); // Debugging
+
+                            // Eliminar el árbol del mapa
+                            trees.remove(i);
+
+                            // Sumar puntos
+                            controller.updatePoints(10);
+
+                            // Mostrar mensaje
+                            controller.getGameScreenController().showToolMessage("¡Árbol talado! +10 puntos");
                             break;
                         } else {
-                            System.out.println("Necesitas un hacha para talar este árbol.");
+                            System.out.println("Necesitas un hacha para talar este árbol."); // Debugging
+                            controller.getGameScreenController().showToolMessage("Necesitas un hacha para talar este árbol");
                         }
                     }
                 }
             }
 
 
+
+
             case "DIGIT1" -> { // Seleccionar hacha
                 player.equipTool(0);
-                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+                controller.getGameScreenController().highlightTool(ToolType.AXE, player.getToolsCollected());
+                controller.getGameScreenController().showToolMessage("Hacha seleccionada");
             }
             case "DIGIT2" -> { // Seleccionar martillo
                 player.equipTool(1);
-                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+                controller.getGameScreenController().highlightTool(ToolType.HAMMER, player.getToolsCollected());
+                controller.getGameScreenController().showToolMessage("Martillo seleccionado");
             }
             case "DIGIT3" -> { // Seleccionar espada
                 player.equipTool(2);
-                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+                controller.getGameScreenController().highlightTool(ToolType.SWORD, player.getToolsCollected());
+                controller.getGameScreenController().showToolMessage("Espada seleccionada");
             }
             default -> System.out.println("Tecla no asignada: " + event.getCode());
         }

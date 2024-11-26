@@ -165,15 +165,15 @@ public class ScreenB {
 
             case "DIGIT1" -> { // Seleccionar hacha
                 player.equipTool(0);
-                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+                controller.getGameScreenController().highlightTool(ToolType.AXE, player.getToolsCollected());
             }
             case "DIGIT2" -> { // Seleccionar martillo
                 player.equipTool(1);
-                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+                controller.getGameScreenController().highlightTool(ToolType.HAMMER, player.getToolsCollected());
             }
             case "DIGIT3" -> { // Seleccionar espada
                 player.equipTool(2);
-                controller.getGameScreenController().highlightTool(player.getCurrentTool());
+                controller.getGameScreenController().highlightTool(ToolType.SWORD, player.getToolsCollected());
             }
             default -> System.out.println("Tecla no asignada: " + event.getCode());
         }
