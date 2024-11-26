@@ -100,7 +100,7 @@ public class Player {
         initImages();
     }
 
-    
+
     public void updateInteractionArea() {
         interactionArea.setCenterX(position.getX() + hitBox.getWidth() / 2);
         interactionArea.setCenterY(position.getY() + hitBox.getHeight() / 2);
